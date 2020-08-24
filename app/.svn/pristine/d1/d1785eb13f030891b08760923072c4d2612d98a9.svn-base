@@ -1,0 +1,50 @@
+<template>
+    <div class="message-notice-detail">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">通知详情</div>
+        </header-top>
+        <div class="message-detail">
+            <div class="message-item">
+                <p class="title">关于召开大新实业股份有限公司2019年第二次股东大会的通知</p>
+                <p><span>大新实业股份有限公司</span>10分钟前</p>
+            </div>
+            <div ></div>
+        </div>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+export default {
+    data(){
+        return{
+
+        }
+    },
+    components:{
+        HeaderTop
+    },
+}
+</script>
+
+<style lang='less' scoped>
+    .message-detail{
+        padding: 0 10px;
+        font-size: 15px;
+        .message-item{
+            border-bottom: 1px solid #ddd;
+            padding: 12px 0;
+            p{
+                width: 100%;
+                line-height: 20px;
+                span{
+                    margin-right:16px;
+                }
+            }
+        }
+        
+    }
+</style>

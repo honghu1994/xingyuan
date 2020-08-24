@@ -1,0 +1,146 @@
+<template>
+	<div class="chengjiaogonggao">
+		<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>成交公告</h1>
+		</header>
+
+		<section>
+			<div class="tabe1">
+				<ul>
+					<li @click="wu4()">
+						<p>
+							<span>荔景大厦707、708、709室物业招租成交公示</span>
+							<span>进行中</span>
+						</p>
+						<div class="box">
+							<div>
+								深圳市国有免税商品（集团）有限公司委托深圳联合产权交易
+							</div>
+							<span>2019/10/17</span>
+						</div>
+					</li>
+
+					<li @click="wu4()">
+						<p>
+							<span>荔景大厦707、708、709室物业招租成交公示</span>
+							<span>进行中</span>
+						</p>
+						<div class="box">
+							<div>
+								深圳市国有免税商品（集团）有限公司委托深圳联合产权交易
+							</div>
+							<span>2019/10/17</span>
+						</div>
+					</li>
+
+				</ul>
+			</div>
+
+		</section>
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			hui1() {
+				this.$router.go(-1);
+			},
+
+			wu4() {
+					this.$router.push('/chengjiaogonggaoXQ');
+			},
+
+		}
+	}
+</script>
+
+<style lang="less">
+	.chengjiaogonggao {
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			top: 0;
+			left: 0;
+			color: white;
+			font-size: 10px;
+			font-family: "宋体";
+			line-height: 124/100rem;
+			h1 {
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		section {
+			/*border: 1px solid black;*/
+			width: 100%;
+			height: 1000/100rem;
+			position: fixed;
+			top: 118/100rem;
+			background: rgb(233, 233, 233);
+			.tabe1 {
+				h1 {
+					color: rgba(145, 151, 254);
+					font-size: 14px;
+					font-weight: lighter;
+					padding-left: 30/100rem;
+				}
+				ul {
+					margin-top: 10/100rem;
+					li {
+						border-bottom: 1px solid gainsboro;
+						/*width: 100%;*/
+						height: 150/100rem;
+						padding-left: 30/100rem;
+						font-size: 14px;
+						background: white;
+						p {
+							padding-top: 20/100rem;
+							position: relative;
+							font-size: 14px;
+							span:nth-child(2) {
+								position: absolute;
+								right: 20/100rem;
+								color: #168ABD;
+								font-size: 13px;
+							}
+						}
+						.box {
+							position: relative;
+							div {
+								padding-top: 20/100rem;
+								width: 75%;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								white-space: nowrap;
+								font-size: 12px;
+							}
+							span {
+								display: block;
+								position: absolute;
+								top: 20/100rem;
+								right: 20/100rem;
+								font-size: 12px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

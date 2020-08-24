@@ -1,0 +1,192 @@
+<template>
+
+	<div class="yujingxinxi">
+		<header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">资产预警信息</div>
+        </header-top>
+		<div class="zssection">
+			<scroll
+				class="scroll-content"
+				ref="scroll"
+				:probe-type='3'
+				:pull-up-load="true"
+				@pullingup='loadMore'
+			>
+				<div  @click="toDetail(item)"   class="box" id="Box" :key="index"  v-for="(item,index) in assetsData">
+					<h1>{{item.assetsName}}</h1>
+					<ul>
+						<li>
+							<span>{{item.address}}</span>
+						</li>
+						<li>
+							<span>合同名称:</span>
+							<span>{{item.contractName}}</span>
+						</li>
+						<li>
+							<span>合同编号:</span>
+							<span>{{item.contractNumber}}</span>
+						</li>
+						<li>
+							<span>截止时间:</span>
+							<span style="color: red;">{{item.endDate}}</span>
+						</li>
+						<li>
+							<span>资产预警:</span>
+							<span style="color:royalblue;">{{item.earlyWarningType}}</span>
+							<span style="color:orange;" v-if="item.levels!='无'">{{item.levels}}色预警</span>
+						</li>
+					</ul>
+					
+					<div class="border"></div>
+					<p class="zsbom">
+						<span>{{item.jurisdictionName}}</span>
+						<span>{{item.companyName}}</span>
+					</p>
+				</div>
+				
+			</scroll>
+		</div>
+	</div>
+</template>
+<script>
+import HeaderTop from '@/common/Header'
+import Scroll from '@/common/Scroll'
+	export default {
+		data() {
+			return {
+				assetsData:[],
+				assetsId:'',
+				isShowMessage:false,
+				nowPage:0
+			}
+		},
+		components:{
+        	HeaderTop,Scroll
+		},
+		mounted() {
+			this.getData()
+		},
+		methods: {
+			//获取数据
+			getData(){
+				this.nowPage = this.nowPage + 1
+       		 	this.$http.post("earlyWarnings/getAssetEarlyWarningListPage", {
+						nowPage:this.nowPage
+       			 })
+        		.then(result => {
+					console.log(result)
+         		 if (result.data.code == 200) {
+					// this.assetsData=result.data.data.data
+					this.assetsData.push(...result.data.data.data)
+                    this.pagesCount = result.data.data.pageUtil.pageCount
+                    setTimeout(()=>{
+                      this.$refs.scroll.refresh()
+                      this.$refs.scroll.finishPullUp()
+                    }, 100);
+         			}
+        		});
+			},
+			loadMore(){
+				// console.log('加载更多')
+				console.log(this.nowPage)
+				console.log(this.pagesCount)
+				if( this.nowPage >= this.pagesCount ){
+					this.isShowMessage = true
+					return
+				}
+				this.getData()
+			},
+           
+		   toDetail(val) {
+				this.$router.push({
+				path: "/yujingxiangqing",
+				query: {
+				assetsId: val.assetsId,
+				levels:val.levels
+        		}
+			});
+		},
+		}
+	}
+</script>
+
+<style lang="less" scoped>
+	.yujingxinxi {
+		
+	
+		.zssection{
+			
+			width: 100%;
+			
+			// background: gainsboro;
+			overflow: auto;
+			
+			
+			#Box{
+			 margin-top:-1/100rem;
+			}
+			.box {
+			    border-bottom: .2rem solid #f2f2f2;
+				background: white;
+				// margin-top:20/100rem;
+					.border{
+						margin-top: .2rem;
+							padding-left: 30/100rem;
+					border-bottom: 1px solid #797979;
+					
+					}
+					.zsbom{
+						margin-bottom: .1rem;
+					}
+				h1 {
+					font-size: 18px;
+					font-weight: normal;
+					padding-top: 25/100rem;
+					padding-left: 30/100rem;
+				}
+				ul {
+					
+				
+					list-style-type: none;
+					padding-top: 5/100rem;
+					padding-left: 30/100rem;
+					font-size: 16px;
+					li {
+					    
+						padding-top: 20/100rem;
+						span:nth-child(2) {
+							padding-left: 30/100rem;
+						}
+						span:nth-child(3) {
+							padding-left: 60/100rem;
+						}
+					}
+				}
+				p {
+					padding-left: 30/100rem;
+					padding-top:20/100rem;
+					font-size: 16px;
+					// position: relative;
+					span:nth-child(2) {
+						position: absolute;
+						right: 60/100rem;
+					}
+				}
+			}
+		}
+	}
+	.scroll-content{
+      overflow: hidden;
+      position: absolute;
+      top: 1.18rem;
+      bottom: 50px;
+      left:0;
+      right:0;
+      border-top: 1px solid #ddd;
+      padding:0 10px;
+
+  }
+</style>

@@ -1,0 +1,391 @@
+.fuchi {
+    .right {
+        .section_top {
+            margin-left: 30px;
+            .top1 {
+                color: white;
+                font-size: 12px;
+                display: flex;
+                margin-top: 10px;
+                img {
+                    width: 16px;
+                }
+                span {
+                    content: '';
+                    display: inline-block;
+                    width: 6px;
+                    height: 6px;
+                    border-top: 2px solid white;
+                    border-right: 2px solid white;
+                    transform: rotate(45deg);
+                    -webkit-transform: rotate(50deg);
+                    margin-left: 5px;
+                    margin-right: 5px;
+                }
+            }
+            .top2 {
+                color: white;
+                font-size: 13px;
+                display: flex;
+                margin-top: 10px;
+                div:nth-child(1) {
+                    display: flex;
+                    p:nth-child(2) {
+                        .el-input {
+                            font-size: 10px;
+                            width: 80%;
+                        }
+                        .el-input__inner {
+                            background-color: #FFF;
+                            border-radius: 4px;
+                            color: #606266;
+                            height: 24px;
+                            line-height: 24px;
+                            outline: 0;
+                            padding: 0 3px;
+                        }
+                        .el-icon-arrow-up:before {
+                            content: "\E6E1";
+                            position: absolute;
+                            top: -5px;
+                        }
+                    }
+                }
+                div:nth-child(2) {
+                    display: flex;
+                    p:nth-child(1) {
+                        margin-left: -10px;
+                    }
+                    p:nth-child(2) {
+                        .el-input__inner {
+                            height: 24px;
+                            line-height: 24px;
+                            padding: 0 5px;
+                        }
+                        .el-icon-edit:before {
+                            content: " ";
+                        }
+                        .el-input {
+                            width: 100%;
+                        }
+                        .el-autocomplete-suggestion li {
+                            line-height: 20px;
+                            font-size: 12px;
+                        }
+                    }
+                }
+                div:nth-child(3) {
+                    display: flex;
+                    .p_1 {
+                        margin-left: 20px;
+                    }
+                    .block {
+                        .el-input__inner {
+                            height: 24px;
+                            line-height: 24px;
+                            font-size: 12px;
+                        }
+                        .el-input__icon {
+                            line-height: 25px;
+                        }
+                        .el-date-editor.el-input,
+                        .el-date-editor.el-input__inner {
+                            width: 130px;
+                        }
+                        .el-input--suffix .el-input__inner {
+                            padding-right: 0px;
+                        }
+                    }
+                    .p_3 {
+                        width: 30px;
+                        text-align: center;
+                    }
+                    .p_5 {
+                        padding-left: 10px;
+                        span {
+                            display: flex;
+                        }
+                        span:nth-child(1) {
+                            img {
+                                width: 18px;
+                                height: 18px;
+                                margin-top: 2px;
+                            }
+                        }
+                        span:nth-child(2) {}
+                        .el-button {
+                            height: 24px;
+                            line-height: 24px;
+                            width: 55px;
+                            padding-left: 0px;
+                            padding-top: 0px;
+                            font-size: 12px;
+                            border-radius: 4px;
+                        }
+                    }
+                }
+            }
+            .top3 {
+                margin-top: 10px;
+                img {
+                    width: 10px;
+                }
+                .el-button {
+                    padding: 4px 6px;
+                    font-size: 12px;
+                    margin-left: 3px;
+                }
+                .el-dialog__body {
+                    padding: 11px 20px;
+                }
+                .el-dialog {
+                    position: relative;
+                    margin: 0 auto 50px;
+                    box-sizing: border-box;
+                    width: 34%;
+                }
+               .el-dialog__header {
+                      padding: 0px 0px 0px;
+                 }
+                
+                
+                //弹框
+                .popvers {
+                     
+                    .popvers_top {
+                        display: flex;
+                        margin-left: 10px;
+                        margin-bottom: 5px;
+                        img {
+                            width: 20px;
+                        }
+                        h3 {
+                            font-size: 14px;
+                            font-weight: bold;
+                            padding-left: 10px;
+                        }
+                    }
+                    .nav {
+                        display: flex;
+                        div {
+                            border-left: 1px solid cornflowerblue;
+                            border-right: 1px solid cornflowerblue;
+                            border-top: 1px solid cornflowerblue;
+                            padding: 2px 4px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            background: white;
+                            border-top-left-radius: 4px;
+                            border-top-right-radius: 4px;
+                            position: relative;
+                            top: 4px;
+                        }
+                    }
+                    .tabe1 {
+                        border: 1px solid cornflowerblue;
+                        min-height: 300px;
+                        h1 {
+                            font-size: 14px;
+                            font-weight:600;
+                            margin-left: 20px;
+                            margin-top: 5px;
+                        }
+                        //弹框-组织结构
+                        #a1 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: -10px;
+                            #p1 {
+                                
+                            }
+                            #p2 {
+                                .el-input__inner {
+                                    height: 24px;
+                                    line-height: 24px;
+                                    padding: 0 5px;
+                                }
+                                .el-icon-edit:before {
+                                    content: " ";
+                                }
+                                .el-input {
+                                    width: 150%;
+                                }
+                                .el-autocomplete-suggestion li {
+                                    line-height: 20px;
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+                        //弹框-扶持类别
+                        #a2 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: 10px;
+                            #p2_1 {}
+                            #p2_2 {
+                                select {
+                                    width: 392%;
+                                    height: 25px;
+                                    line-height: 26px;
+                                    border-radius: 4px;
+                                    border: 1px solid rgb(220, 223, 230);
+                                }
+                            }
+                        }
+                        //弹框-资助内容
+                        #a3 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: 10px;
+                            #p3_1 {}
+                            #p3_2 {
+                                .el-input__inner {
+                                    height: 25px;
+                                    line-height: 25px;
+                                    padding: 0 4px;
+                                    width: 150%;
+                                }
+                            }
+                        }
+                        //项目情况
+                        #a4 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: 10px;
+                            #p4_1 {}
+                            #p4_2 {
+                                .el-input__inner {
+                                    height: 25px;
+                                    line-height: 25px;
+                                    padding: 0 4px;
+                                    width: 150%;
+                                }
+                            }
+                        }
+                        //项目情况
+                        #a5 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: 10px;
+                            #p5_1 {}
+                            #p5_2 {
+                                display: flex;
+                                .el-input__inner {
+                                    height: 25px;
+                                    line-height: 25px;
+                                    padding: 0 4px;
+                                    width: 80%;
+                                }
+                                span {
+                                    margin-left: -25px;
+                                    margin-top: 3px;
+                                }
+                            }
+                        }
+                        //备注
+                        #a6 {
+                            display: flex;
+                            margin-left: 40px;
+                            margin-top: 10px;
+                            #p6_1 {
+                                span:nth-child(1) {
+                                    padding-left: 25px;
+                                }
+                                .span2 {
+                                    font-size: 12px;
+                                }
+                                a {
+                                    color: red;
+                                }
+                            }
+                            #p6_2 {
+                                display: flex;
+                                .el-textarea__inner {
+                                    padding: 5px 15px;
+                                    line-height: 1.8;
+                                    width: 145%;
+                                }
+                            }
+                        }
+                    }
+                    //弹框-底部按钮
+                    .el-button--text {
+                        margin-top: 10px;
+                    }
+                }
+            }
+        }
+        .biao {
+            width: 95%;
+            padding-left: 2.5%;
+            padding-bottom: 30px;
+            padding-top: 20px;
+            .el-table th {
+                background: rgb(5, 135, 219);
+                font-size: 13px;
+            }
+            .el-table tr {
+                background-color: rgb(12, 57, 140);
+                color: white;
+                font-size: 12px;
+            }
+            .el-table--enable-row-transition .el-table__body td {
+                // transition: background-color 3s ease;
+            }
+            .el-table--enable-row-hover .el-table__body tr:hover>td {
+                background-color: cornflowerblue !important;
+            }
+            .el-table td,
+            .el-table th {
+                padding: 8px 0;
+            }
+            .el-button {
+                cursor: pointer;
+                background: rgb(5, 135, 219);
+                border: none;
+                color: white;
+                text-align: center;
+                box-sizing: border-box;
+                padding: 10px 8px;
+                font-size: 12px;
+                border-radius: 4px;
+            }
+        }
+        .fen {
+            float: right;
+            margin-right: 50px;
+            margin-top: 5px;
+            .block {
+                .el-input__inner {
+                    background: rgb(5, 3, 39);
+                    color: white;
+                    font-weight: 100;
+                }
+                .el-pager {
+                    li {
+                        background: rgb(5, 3, 39);
+                    }
+                }
+                .el-pagination {
+                    white-space: nowrap;
+                    padding: 2px 3px;
+                    color: white;
+                    font-weight: 700;
+                }
+                .el-pagination .btn-next,
+                .el-pagination .btn-prev {
+                    background: center center no-repeat rgb(5, 3, 39);
+                    color: white;
+                }
+                .el-pagination__total {
+                    color: white;
+                    font-weight: 100;
+                }
+                .el-pagination__jump {
+                    font-weight: 100;
+                    color: white;
+                }
+            }
+        }
+    }
+}

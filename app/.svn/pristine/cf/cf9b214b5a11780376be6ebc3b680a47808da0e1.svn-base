@@ -1,0 +1,196 @@
+<template>
+  <div class="yujingxinxi">
+    <header-top>
+      <div slot="left">
+        <img @click="$router.go(-1)" src="@/assets/img/back.png" />
+      </div>
+      <div slot="mid">资产预警信息</div>
+    </header-top>
+    <div class="zssection">
+    
+      <van-list v-model="loading" :finished="finished" finished-text="我是有底线的！" @load="onLoad07">
+        
+          <div
+            @click="toDetail(item)"
+            class="box"
+            id="Box"
+            :key="index"
+            v-for="(item,index) in assetsData"
+          >
+            <h1>{{item.assetsName}}</h1>
+            <ul>
+              <li>
+                <span>{{item.address}}</span>
+              </li>
+              <li>
+                <span>合同名称:</span>
+                <span>{{item.contractName}}</span>
+              </li>
+              <li>
+                <span>合同编号:</span>
+                <span>{{item.contractNumber}}</span>
+              </li>
+              <li>
+                <span>截止时间:</span>
+                <span style="color: red;">{{item.endDate}}</span>
+              </li>
+              <li>
+                <span>资产预警:</span>
+                <span style="color:royalblue;">{{item.earlyWarningType}}</span>
+                <span style="color:orange;" v-if="item.levels!='无'">{{item.levels}}色预警</span>
+              </li>
+            </ul>
+
+            <div class="border"></div>
+            <p class="zsbom">
+              <span>{{item.jurisdictionName}}</span>
+              <span>{{item.companyName}}</span>
+            </p>
+          </div>
+
+          </van-list>
+      
+     
+    </div>
+  </div>
+</template>
+<script>
+import HeaderTop from "@/common/Header";
+
+export default {
+  data() {
+    return {
+      assetsData: [],
+      assetsId: "",
+      //   isShowMessage: false,
+      nowPage: 1,
+      loading: false,
+      finished: false,
+      pullLoading: false
+    };
+  },
+  components: {
+    HeaderTop
+  },
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    onRefresh() {
+    
+      this.getData();
+      this.pullLoading = false;
+    },
+
+    onLoad07() {
+     
+      console.log(11111111);
+
+      //   setTimeout(() => {
+      //     this.nowPage += 1;
+
+      //     // this.$http
+      //     //   .post("earlyWarnings/getAssetEarlyWarningListPage", {
+      //     //     nowPage: this.nowPage
+      //     //   })
+      //     //   .then(result => {
+      //     //     if (result.data.code == 200) {
+      //     //       this.assetsData.push(...result.data.data.data);
+      //     //       let totalCount = result.data.data.PageUtil.totalCount;
+      //     // 		console.log(assetsData);
+      //     //       if (this.officeData.length == totalCount) {
+      //     //         this.finished = true;
+      //     //       }
+      //     //     }
+      //     //   });
+
+      //     this.loading = false;
+      //   }, 500);
+    },
+    //获取数据
+    getData() {
+      this.$http
+        .post("earlyWarnings/getAssetEarlyWarningListPage", {
+          nowPage: this.nowPage
+        })
+        .then(result => {
+        
+          
+          if (result.data.code == 200) {
+            this.assetsData = result.data.data.data;
+          }
+        });
+    },
+
+    toDetail(val) {
+      this.$router.push({
+        path: "/yujingxiangqing",
+        query: {
+          assetsId: val.assetsId,
+          levels: val.levels
+        }
+      });
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.yujingxinxi {
+  .zssection {
+    width: 100%;
+
+    // background: gainsboro;
+    overflow: auto;
+
+    #Box {
+      margin-top: -1/100rem;
+    }
+    .box {
+      border-bottom: 0.2rem solid #f2f2f2;
+      background: white;
+      // margin-top:20/100rem;
+      .border {
+        margin-top: 0.2rem;
+        padding-left: 30/100rem;
+        border-bottom: 1px solid #797979;
+      }
+      .zsbom {
+        margin-bottom: 0.1rem;
+      }
+      h1 {
+        font-size: 18px;
+        font-weight: normal;
+        padding-top: 25/100rem;
+        padding-left: 30/100rem;
+      }
+      ul {
+        list-style-type: none;
+        padding-top: 5/100rem;
+        padding-left: 30/100rem;
+        font-size: 16px;
+        li {
+          padding-top: 20/100rem;
+          span:nth-child(2) {
+            padding-left: 30/100rem;
+          }
+          span:nth-child(3) {
+            padding-left: 60/100rem;
+          }
+        }
+      }
+      p {
+        padding-left: 30/100rem;
+        padding-top: 20/100rem;
+        font-size: 16px;
+        // position: relative;
+        span:nth-child(2) {
+          position: absolute;
+          right: 60/100rem;
+        }
+      }
+    }
+  }
+}
+
+</style>

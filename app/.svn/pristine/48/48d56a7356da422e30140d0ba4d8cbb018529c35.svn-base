@@ -1,0 +1,268 @@
+<template>
+	<div class="daiban">
+		<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>待办事项</h1>
+
+		</header>
+
+		<nav>
+			<ul>
+				<li :class="{active:type=='a'}" @click="page('a')">资产</li>
+				<li :class="{active:type=='b'}" @click="page('b')">交易</li>
+				<li :class="{active:type=='c'}" @click="page('c')">合同</li>
+				<li :class="{active:type=='d'}" @click="page('d')">财务</li>
+				<li :class="{active:type=='e'}" @click="page('e')">证照</li>
+			</ul>
+		</nav>
+
+		<section>
+			<!--资产-->
+			<div class="tabe1" v-if="type=='a'">
+				<div class="assets-item" @click="goNavAssetsDetail(item.PROC_INST_ID_,item.ID_)" v-for="item in assetsList" :key="item.PROC_INST_ID_">
+					<div style="border-bottom: 1px solid #ddd;padding-left:20px;padding-bottom:6px;">
+						<p><span>申请人:</span>{{item.INITATOR}}</p>
+						<p><span>流程名称:</span>{{item.PNAME_}}</p>
+						<p><span>当前节点(代办人):</span>{{item.ASSIGNEE_}}</p>
+						<p><span>当前任务:</span>{{item.NAME_}}</p>
+						<p><span>创建时间:</span>{{item.CREATE_TIME_}}</p>
+					</div>
+					<div class="btn">
+						<van-button icon="manager" type="info" size="small" @click.stop="delegateBtn(item.ID_)">委派</van-button>
+						<van-button icon="edit" type="info" size="small" @click.stop="handleBtn(item.PROC_INST_ID_,item.ID_,item.ASSIGNEE_,item.NAME_)">办理</van-button>
+					</div>
+				</div>
+			</div>
+             <!--交易-->
+			<div class="tabe1" v-if="type=='b'">
+				<ul>
+					<!-- <li>
+						<h1>大新时代大厦写字楼</h1>
+						<p>
+							<span>经营性资产</span>
+							<span>写字楼</span>
+							<span>当前环节：街道办受理</span>
+						</p>
+						<p>
+							<span>南头街道</span>
+							<span>深圳市大新实业股份有限公司</span>
+						</p>
+						<p>
+							<span>办理</span>
+							<span>邀请</span>
+							<span>跟踪</span>
+						</p>
+					</li> -->
+
+
+
+				</ul>
+			</div>
+			 <!--合同-->
+			<div class="tabe1" v-if="type=='c'">
+				<ul>
+					<!-- <li>
+						<h1>大新时代大厦写字楼</h1>
+						<p>
+							<span>经营性资产</span>
+							<span>写字楼</span>
+							<span>当前环节：街道办受理</span>
+						</p>
+						<p>
+							<span>南头街道</span>
+							<span>深圳市大新实业股份有限公司</span>
+						</p>
+						<p>
+							<span>办理</span>
+							<span>邀请</span>
+							<span>跟踪</span>
+						</p>
+					</li> -->
+				</ul>
+			</div>
+
+             <!--财务-->
+			<div class="tabe1" v-if="type=='d'">
+				<ul>
+					<!-- <li>
+						<h1>大新时代大厦写字楼</h1>
+						<p>
+							<span>经营性资产</span>
+							<span>写字楼</span>
+							<span>当前环节：街道办受理</span>
+						</p>
+						<p>
+							<span>南头街道</span>
+							<span>深圳市大新实业股份有限公司</span>
+						</p>
+						<p>
+							<span>办理</span>
+							<span>邀请</span>
+							<span>跟踪</span>
+						</p>
+					</li> -->
+				</ul>
+			</div>
+			 <!--证照-->
+			<div class="tabe1" v-if="type=='e'">
+				<ul>
+					<!-- <li>
+						<h1>大新时代大厦写字楼</h1>
+						<p>
+							<span>经营性资产</span>
+							<span>写字楼</span>
+							<span>当前环节：街道办受理</span>
+						</p>
+						<p>
+							<span>南头街道</span>
+							<span>深圳市大新实业股份有限公司</span>
+						</p>
+						<p>
+							<span>办理</span>
+							<span>邀请</span>
+							<span>跟踪</span>
+						</p>
+					</li> -->
+				</ul>
+			</div>
+		</section>
+
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				type: 'a',
+				name:this.$store.state.loginInfo.sessionVal.uSERNAME,
+				assetsList:[],
+
+
+			}
+		},
+		methods: {
+			delegateBtn(id){//委派
+				this.$router.push({path:'/xiaoxi/invitation',query:{id:id}})
+			},
+			handleBtn(id,ID_,name,task){//办理
+				this.$router.push({path:'/xiaoxi/assetsHandle',query:{id:id,ID:ID_,name:name,task:task}})
+			},
+			getPendingApproval(){
+				this.$http.post('app_module2/getPendingApproval',{USERNAME:this.name}).then(res=>{
+					console.log(res)
+					if(res.data.code == 200){
+						this.assetsList = res.data.data.varList
+					}
+				})
+			},
+			hui1() {
+				this.$router.go(-1);
+			},
+			on1() {
+				this.$router.push('/xiangxi1');
+			},
+			//切换面板
+			page(val) {
+				this.type = val;
+			},
+			goNavAssetsDetail(id,ID_){
+				this.$router.push({path:'/xiaoxi/navAssetsDetail',query:{id:id,ID:ID_}})
+			}
+		},
+		mounted(){
+			this.getPendingApproval()
+		}
+	}
+</script>
+
+<style lang="less">
+	.daiban{
+
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			position: fixed;
+			top: 0;
+			left: 0;
+			color: white;
+			line-height: 124/100rem;
+			z-index: 100;
+			h1 {
+				font-size: 20px;
+				font-weight: normal;
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		nav {
+			/*border: 1px solid red;*/
+			// width: 100%;
+			height: 90/100rem;
+			line-height: 90/100rem;
+			position: fixed;
+			z-index: 999;
+			background: white;
+			top: 118/100rem;
+			font-size: 11px;
+
+			margin-left: -8/100rem;
+			padding-left: -20/100rem;
+			font-weight: lighter;
+			ul {
+				li {
+					list-style-type: none;
+					border-bottom: 1px solid white;
+					width: 160/100rem;
+					height:80/100rem;
+					line-height: 80/100rem;
+					float: left;
+					text-align: center;
+					margin-left: -10/100rem;
+					font-size: 15px;
+				}
+			}
+		}
+		.active{
+			color: blue;
+			border-bottom: 1px solid blue;
+		}
+		section{
+			padding-top:2.1rem;
+			font-size: 14px;
+
+		}
+		.assets-item{
+			padding-top: 10px;
+			// padding-bottom: 10px;
+
+			// padding-left: 10px;
+			p{
+				line-height: 26px;
+				color: #666;
+				span{
+					color: #333;
+				}
+			}
+			.btn{
+				display: flex;
+				justify-content: space-between;
+				padding:0 40px;
+				margin-top:10px;
+			}
+		}
+		.el-dialog{
+			width: 90%;
+		}
+
+	}
+</style>

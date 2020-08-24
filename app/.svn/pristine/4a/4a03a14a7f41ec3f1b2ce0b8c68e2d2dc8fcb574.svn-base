@@ -1,0 +1,132 @@
+<template>
+  <div class="notice">
+    <header-top>
+      <div slot="left">
+        <img @click="$router.go(-1)" src="@/assets/img/back.png" />
+      </div>
+      <div slot="mid">招标公告</div>
+    </header-top>
+    <div class="content">
+        <scroll
+            class="scroll-content"
+            ref="scroll"
+            :probe-type='3'
+            :pull-up-load="true"
+            @pullingup='loadMore'
+        >
+            <div class="li" @click="toTenderMessage(item.noticeId)" v-for="item in demandList" :key="item.noticeId">
+                <p class="pad">
+                    <span class="font"> {{item.proName}}</span>
+                    <span  class="font01">
+                    <!-- {{item.proName}}元/月 -->
+                    </span>
+                </p>
+                <p class="pad01">
+                    <span style="color:#009999">数据来源</span>
+                    <span style="marginLeft:.1rem">{{item.pubResource}}</span>
+                </p>
+                <p class="zsborder"></p>
+            </div>
+            <p v-if="isShowMessage" style="text-align:center;color:#666; height:20px;margin-top:5px;font-size:13px;">没有更多数据</p>
+        </scroll>
+    </div>
+  </div>
+</template>
+
+<script>
+import HeaderTop from "@/common/Header";
+import Scroll from '@/common/Scroll'
+export default {
+    data() {
+        return {
+            demandList:[],
+            nowPage:0,
+            pagesCount:1,
+            isShowMessage:false,
+        };
+    },
+    components: {
+        HeaderTop,Scroll
+    },
+    methods: {
+        toTenderMessage(id){
+            this.$router.push({path:'/tenderMessage01',query:{id:id}});
+        },
+        getDemandInformationList(){//招标公告 
+            this.nowPage = this.nowPage + 1
+            this.$http.post('biddingInformation/getBiddingInformationListPage',{nowPage:this.nowPage}).then(res=>{
+                // console.log(res)
+                if(res.data.code == 200){
+                    // this.demandList = res.data.data.data
+                    this.demandList.push(...res.data.data.data)
+                    this.pagesCount = res.data.data.pageUtil.pageCount
+                    setTimeout(()=>{
+                      this.$refs.scroll.refresh()
+                      this.$refs.scroll.finishPullUp()
+                    }, 100);
+                }
+            })
+        },
+        loadMore(){
+            // console.log('加载更多')
+            console.log(this.nowPage)
+            console.log(this.pagesCount)
+            if( this.nowPage >= this.pagesCount ){
+                this.isShowMessage = true
+                return
+            }
+            this.getDemandInformationList()
+        },
+    },
+    mounted(){
+        this.getDemandInformationList()
+    }
+};
+</script>
+
+<style lang='less' scoped>
+.notice{
+    .content{
+        // border-top: .2rem solid #e9e9e9;
+        .li{
+            margin-top: .3rem;
+            
+        }
+         .zsborder{
+                   border-top: 1px solid #e9e9e9;
+                   margin-top: 0.2rem;
+                }
+        .pad{
+            padding-left: .3rem;
+            // text-align: right;
+        }
+        .pad01{
+            padding-left: .4rem;
+            margin-top: .2rem;
+            font-size: 14px;
+            
+        }
+        .font{
+           font-size: 15px;
+            font-weight: bold;
+            line-height: .5rem;
+            text-align: left;
+        }
+        .font01{
+            font-size: 16px;
+            float: right;
+        }
+    }
+}
+.scroll-content{
+    overflow: hidden;
+    position: absolute;
+    top: 1.18rem;
+    bottom: 50px;
+    left:0;
+    right:0;
+    border-top: 1px solid #ddd;
+    padding:0 10px;
+
+}
+</style>

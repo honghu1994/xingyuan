@@ -1,0 +1,75 @@
+<template>
+    <div class="message-notice">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">通知</div>
+        </header-top>
+        <div class="message-content">
+            <div class="message-item" @click="messageDetail">
+                <p class="title">关于召开大新实业股份有限公司2019年第二次股东大会的通知</p>
+                <p><span>大新实业股份有限公司</span>10分钟前</p>
+            </div>
+             <div class="message-item">
+                <p class="title">关于召开大新实业股份有限公司2019年第二次股东大会的通知</p>
+                <div class="img-wrap">
+                    <img src="@/assets/img/gz_pic1.png" alt="">
+                    <img src="@/assets/img/gz_pic2.png" alt="">
+                    <img src="@/assets/img/gz_pic1.png" alt="">
+                </div>
+                <p><span>大新实业股份有限公司</span>7分钟前</p>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+export default {
+    data(){
+        return{
+
+        }
+    },
+    components:{
+        HeaderTop
+    },
+    methods:{
+        messageDetail(){
+            this.$router.push('/xiaoxi/messageNoticeDetail')
+        }
+    }
+}
+</script>
+
+<style lang='less' scoped>
+    .message-content{
+        padding: 0 10px;
+        font-size: 15px;
+        box-sizing: border-box;
+        .message-item{
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+            .title{
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+            }
+            p{
+                width: 100%;
+                line-height: 26px;
+                span{
+                    margin-right:16px;
+                }
+            }
+            img{
+                width: 2rem;
+                height: 1.52rem;
+            }
+
+        }
+        
+    }
+</style>

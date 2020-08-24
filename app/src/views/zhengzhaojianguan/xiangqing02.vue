@@ -1,0 +1,209 @@
+<template>
+	<div class="xiangqing02">
+		<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>详情</h1>
+		</header>
+
+		<section>
+			<div class="tabe1" v-if="type=='a'">
+				<ul>
+					<li>
+						<span>单位名称：</span>
+						<span>{{chargeDetail.company_name}}</span>
+					</li>
+					<li>
+						<span>所属辖区：</span>
+						<span>{{chargeDetail.torganization_name}}</span>
+
+					</li>
+					<li>
+						<span>职位：</span>
+						<span>{{chargeDetail.post}}</span>
+
+					</li>
+					<li>
+						<span>姓名：</span>
+						<span>{{chargeDetail.personnel_name}}</span>
+					</li>
+					<li>
+						<span>性别：</span>
+						<span>{{chargeDetail.sex}}</span>
+					</li>
+					<li>
+						<span>身份证号：</span>
+						<span>{{chargeDetail.id_number}}</span>
+					</li>
+					<li>
+						<span>联系方式：</span>
+						<span>{{chargeDetail.contact_number}}</span>
+					</li>
+					<li>
+						<span>学历：</span>
+						<span>{{chargeDetail.education}}</span>
+					</li>
+					<li>
+						<span>政治面貌：</span>
+						<span>{{chargeDetail.political_appearance}}</span>
+					</li>
+					<li>
+						<span>人员状态：</span>
+						<span>{{chargeDetail.personnel_status}}</span>
+					</li>
+					<li>
+						<span>有无证照：</span>
+						<span>{{chargeDetail.is_license}}</span>
+					</li>
+					<li>
+						<span>身份证地址：</span>
+						<span>{{chargeDetail.id_card_address}}</span>
+					</li>
+					<li>
+						<span>现地址：</span>
+						<span>{{chargeDetail.current_address}}</span>
+					</li>
+					<li>
+						<span>证照名称一：</span>
+						<span>{{licence1.license_name}}</span>
+					</li>
+					<li>
+						<span>证照名称二：</span>
+						<span>{{licence2.license_name}}</span>
+					</li>
+
+				</ul>
+				<p class="bottom">
+					<span>附件：</span>
+					<!--<span>
+					   <el-upload
+                          class="upload-demo"
+                          action="https://jsonplaceholder.typicode.com/posts/"
+                          :on-change="handleChange"
+                          :file-list="fileList3">
+                           <el-button size="small" type="primary">点击上传</el-button>
+                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                         </el-upload>
+					</span>-->
+				</p>
+			</div>
+		</section>
+
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				//切换面板
+				type: 'a',
+				//上传文件
+				fileList3: [{
+					name: 'food.jpeg',
+					url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+					status: 'finished'
+				}, {
+					name: 'food2.jpeg',
+					url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+					status: 'finished'
+				}],
+				id:this.$route.query.id,//详情
+				chargeDetail:{},
+				enclosure:[],
+				licence1:{}, //证照
+				licence2:{} //证照
+			};
+
+		},
+		methods: {
+			//上传文件
+			handleChange(file, fileList) {
+				this.fileList3 = fileList.slice(-3);
+			},
+			hui1() {
+				this.$router.go(-1);
+			},
+			//切换面板
+			page(val) {
+				this.type = val;
+			},
+			getInChargeDetail(){
+				this.$http.post('app_Module3/inChargeDetail',{personnel_code:this.id}).then(res=>{
+					console.log(res)
+					if(res.data.code == 200){
+						this.chargeDetail = res.data.data.inChargeDetail[0]
+						this.enclosure = res.data.data.selectEnclosure
+						this.licence1 = res.data.data.selectLicence[0]
+						this.licence2 = res.data.data.selectLicence[1]
+					}
+				})
+			}
+		},
+		mounted(){
+			this.getInChargeDetail()
+		}
+	}
+</script>
+
+<style lang="less">
+	.xiangqing02 {
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			z-index: 9999;
+			position: fixed;
+			top: 0;
+			left: 0;
+			color: white;
+			line-height: 124/100rem;
+			h1 {
+				font-size: 20px;
+				font-weight: normal;
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		section {
+			width: 100%;
+			padding-top:10px;
+			.tabe1 {
+				ul {
+					padding-top: 30/100rem;
+					li {
+						height: 50/100rem;
+						line-height: 50/100rem;
+						padding-left: 30/100rem;
+						padding-top: 15/100rem;
+						font-size: 15px;
+						display: flex;
+						/*position: relative;*/
+						span {
+							display: block;
+						}
+						span:nth-child(2) {
+							padding-left: 10/100rem;
+						}
+					}
+				}
+				.bottom {
+					font-size: 15px;
+					padding-top: 30/100rem;
+					padding-left: 30/100rem;
+					position: relative;
+					span {
+						display: block;
+					}
+				}
+			}
+		}
+	}
+</style>

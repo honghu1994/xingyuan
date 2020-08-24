@@ -1,0 +1,181 @@
+<template>
+  <div id="app">
+
+    <router-view />
+	<footer>
+		<div class="box">
+			<div :class="{active:isActive==1}" @click="navBarClick(1)">
+				<span class="iconfont icon-xiaoxi"></span>
+				<p>消息</p>
+			</div>
+			<div :class="{active:isActive==2}" @click="navBarClick(2)">
+				<span class="iconfont icon-home"></span>
+				<p>工作</p>
+			</div>
+			<div :class="{active:isActive==3}" @click="navBarClick(3)">
+				<span class="iconfont icon-wode"></span>
+				<p>我的</p>
+			</div>
+		</div>
+	</footer>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  data(){
+	  return{
+		  isActive:2,
+      isRouterAlive:true
+	  }
+  },
+  mounted(){
+	 setTimeout(()=>{
+		 let url=this.$route.path.split('/')[1]
+		if(url == 'xiaoxi' || url == 'daiban'){
+			this.isActive = 1
+		}
+		if(url == 'personal'){
+			this.isActive = 3
+		}
+		if(url == 'home'){
+			this.isActive = 2
+		}
+	 },100)
+	 this.$bus.$on('isShowNum',(n)=>{
+		 this.isActive = n
+	 })
+  },
+  methods:{
+
+	navBarClick(n){
+		this.isActive = n;
+		if(n==1){
+		if(this.$route.path == '/xiaoxi') return
+		this.$router.push('/xiaoxi')
+		this.isActive = n
+		}else if (n==2) {
+			if(this.$route.path == '/home') return
+			this.$router.push('/')
+			this.isActive = n
+		} else {
+		if(this.$route.path == '/personal') return
+		this.$router.push('/personal')
+
+		this.isActive = n
+		}
+	}
+  }
+}
+</script>
+
+<style lang='less'>
+  html{font-size:100%;}
+	body {
+		font-size: 16/100rem;
+		font-size: 0.16rem;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.BMap_cpyCtrl {
+		display: none;
+	}
+	.anchorBL {
+		display: none;
+	}
+
+	.right .van-dropdown-menu{
+        background-color:transparent;
+    }
+    .right .van-dropdown-menu__title{
+        color: #fff;
+        padding:0 2px;
+    }
+	.right .van-hairline--top-bottom::after,.right .van-hairline-unset--top-bottom::after{
+		border-width:0;
+	}
+	.right .van-ellipsis{
+		width: 60px;
+	}
+	footer {
+		margin-top: 50px;
+		.box {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+
+			width: 100%;
+			height: 50px;
+			// line-height: 50px;
+			background: #fff;
+			display: flex;
+			justify-content: space-around;
+			font-size: 15px;
+			:after{
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				border-top: 1px solid #ddd;
+				box-shadow: 0px -1px 3px rgba(172, 167, 167, 0.1);
+			}
+			div{
+				display: flex;
+				flex-direction: column;
+				flex:1;
+				justify-content: center;
+				align-items: center;
+				color: #333;
+				// font-weight: bold;
+				.iconfont{
+					font-size: 0.4rem;
+					font-weight: bold;
+				}
+				p{
+					line-height: 22px;
+				}
+				&.active{
+					color: red!important;
+				}
+			}
+		}
+	}
+	.van-cell{
+		padding:4px 16px;
+	}
+	.work-details-content{
+		img{
+			display: block;
+			width: 80%!important;
+			height:90%!important;
+			margin:0 auto;
+		}
+	}
+	.van-index-bar__index{
+		font-size: 14px;
+		line-height: 18px;
+	}
+	.van-index-anchor{
+		font-size:16px;
+		// font-weight: bold;
+		background:#eee;
+		height:14px;
+		line-height:14px!important;
+		padding:2px 10px;
+	}
+
+
+	//pendingTransactionsDetail页面
+	.van-tabs__line {
+        background-color: blue;
+     }
+	.van-tab{
+		font-size: 15px!important;
+	}
+
+</style>

@@ -1,0 +1,96 @@
+<template>
+  <div class="notice">
+    <header-top>
+      <div slot="left">
+        <img @click="$router.go(-1)" src="@/assets/img/back.png" />
+      </div>
+      <div slot="mid">招标公告</div>
+    </header-top>
+    <div class="content">
+      <ul>
+        <li  class="li" @click="toTenderMessage(item.noticeId)" v-for="item in demandList" :key="item.noticeId">
+            <p class="pad">
+                <span class="font"> 南山区深南大道9678号1栋2号楼大冲商务中心B座28楼物业招租信息公告</span>
+                <span  class="font01">
+                   344872.8元/月
+                </span>
+            </p>
+            <p class="pad01">
+                <span style="color:#009999">进行中</span>
+                <span style="marginLeft:.1rem">深圳市大冲实业股份有限公司</span>
+            </p>
+            <p class="zsborder"></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+import HeaderTop from "@/common/Header";
+export default {
+    data() {
+        return {
+            demandList:[]
+        };
+    },
+    components: {
+        HeaderTop
+    },
+    methods: {
+        toTenderMessage(id){
+            this.$router.push({path:'/tenderMessage01',query:{id:id}});
+            
+            
+        },
+        getDemandInformationList(){//招标公告
+            this.$http.post('biddingInformation/getDemandInformationListPage',{nowPage:1}).then(res=>{
+                if(res.data.code == 200){
+                    this.demandList = res.data.data.data
+                }
+            })
+        }
+    },
+    mounted(){
+        this.getDemandInformationList()
+    }
+};
+</script>
+
+<style lang='less' scoped>
+.notice{
+    .content{
+        border-top: .2rem solid #e9e9e9;
+        .li{
+            margin-top: .3rem;
+            
+        }
+         .zsborder{
+                   border-top: 1px solid #e9e9e9;
+                   margin-top: 0.2rem;
+                }
+        .pad{
+            padding-left: .3rem;
+            // text-align: right;
+        }
+        .pad01{
+            padding-left: .4rem;
+            margin-top: .2rem;
+           
+            
+        }
+        .font{
+           font-size: 16px;
+            font-weight: bold;
+            line-height: .5rem;
+            text-align: left;
+        }
+        .font01{
+            font-size: 16px;
+        float: right;
+           
+           
+        }
+    }
+}
+</style>

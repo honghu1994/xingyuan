@@ -1,0 +1,265 @@
+<template>
+	<div class="xiaoxi">
+		<header>
+			<!-- <img @click="hui1()" class="left" src="@/assets/img/back.png"> -->
+			<h1>消息</h1>
+			<!-- <img class="right" src="@/assets/img/search.png"> -->
+		</header>
+		<section>
+			<ul>
+				<li @click="daiban()">
+					<img src="@/assets/img/icon_09.png">
+					<div>
+						<p>代办事项 <span>{{assetTime | dateFormat}}</span></p>
+						<p><i>{{assetInfo}}</i><span v-if="countNum != 0">{{countNum}}</span></p>
+					</div>
+				</li>
+				<li @click="$router.push('/xiaoxi/messageNotice')">
+					<img src="@/assets/img/u18.png">
+					<div>
+						<p>通知 <span>{{noticeTime}}</span></p>
+						<p><i>{{noticeInfo}}</i><span v-if="noticeCount != 0">{{noticeCount}}</span></p>
+					</div>
+				</li>
+				<li @click="$router.push('/workStatus')">
+					<img src="@/assets/img/icon_02.png">
+					<div>
+						<p>工作动态<span>{{workDynamicsTime | formatDateTime}}</span></p>
+						<p><i>{{workDynamicsInfo}}</i><span v-if="workDynamicsCount != 0">{{workDynamicsCount}}</span></p>
+					</div>
+				</li>
+				<li @click="$router.push('/zcfg')">
+					<img src="@/assets/img/u13.png">
+					<div>
+						<p>政策法规 <span>{{policiesTime | formatDateTime}}</span></p>
+						<p><i>{{policiesInfo}}</i><span v-if="policiesCount != 0">{{policiesCount}}</span></p>
+					</div>
+				</li>
+			</ul>
+		</section >
+	</div>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				countNum:0,
+				assetInfo:'',
+				assetTime:'',
+				name:this.$store.state.loginInfo.sessionVal.uSERNAME,
+				userCode:this.$store.state.loginInfo.sessionVal.uSER_ID,
+				noticeCount:0,
+				noticeTime:'',
+				noticeInfo:'',
+				policiesInfo:'',
+				policiesCount:0,
+				workDynamicsInfo:'',
+				workDynamicsCount:0,
+				workDynamicsTime:'',
+				policiesTime:''
+			}
+		},
+		filters:{
+			formatDateTime(val){
+				return val.slice(0,10)
+			}
+		},
+
+		methods: {
+			getPendingApprovalCount(){//资产
+				this.$http.post('app_module2/getPendingApprovalCount',{USERNAME:this.name}).then(res=>{
+					console.log(222222)
+					console.log(res)
+					if(res.data.code == 200){
+						this.countNum = res.data.data.count
+						if(res.data.data.count>0){
+							this.assetInfo = res.data.data.varList.DGRM_RESOURCE_NAME_
+							this.assetTime = res.data.data.varList.CREATE_TIME_
+						}
+						
+					}
+				})
+			},
+			// 通知
+			getMessageNotification(){
+				this.$http.post('messageNotification/getMessageNotification',{userCode:this.userCode}).then(res=>{
+					// console.log(res)
+					if(res.data.code == 200){
+						this.noticeCount = res.data.data.count
+						this.noticeTime = res.data.data.createTime
+						this.noticeInfo = res.data.data.title
+					}
+				})
+			},
+			// 工作动态 政策法规
+			getMessageDisplay(){
+				this.$http.post('app_Module3/messageDisplay',{user_id:this.userCode}).then(res=>{
+					// console.log(res)
+					if(res.data.code == 200){
+						this.policiesInfo = res.data.data.policies.policyName
+						this.workDynamicsInfo = res.data.data.workDynamics.title
+						this.workDynamicsCount = res.data.data.workDynamicsReaderCount
+						this.policiesCount = res.data.data.policiesReaderCount
+						this.workDynamicsTime = res.data.data.workDynamics.createtime
+						this.policiesTime = res.data.data.policies.createtime
+					}
+				})
+			},
+			//回退
+			hui1() {
+				this.$router.go(-1);
+			},
+			//跳转
+			 daiban() {
+				this.$router.push('/daiban');
+			}
+		},
+		mounted(){
+			this.getPendingApprovalCount()
+			this.getMessageNotification()
+			this.getMessageDisplay()
+		}
+	}
+</script>
+
+<style lang="less">
+	.xiaoxi {
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			position: fixed;
+			top: 0;
+			left: 0;
+			color: white;
+			line-height: 124/100rem;
+			h1 {
+				font-size: 20px;
+				font-weight: normal;
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+			.right {
+				position: absolute;
+				top: 40/100rem;
+				left: 86%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		section {
+
+			border: 1px soild black;
+			width: 100%;
+			height: 1050/100rem;
+			background:rgba(242, 242, 242);
+			/*position: absolute;*/
+			 position: fixed;
+			top: 120/100rem;
+			ul {
+				border: 1px soild black;
+				width: 100%;
+				height: 1050/100rem;
+				background: white;
+
+				position: absolute;
+			  top: 20/100rem;
+
+				li {
+					border-bottom: 1px solid gainsboro;
+					box-sizing: border-box;
+					width: 100%;
+					height: 145/100rem;
+					background: white;
+					display: flex;
+					padding-top: 25/100rem;
+					padding-left: 30/100rem;
+					img {
+						width: 100/100rem;
+						height: 100/100rem;
+					}
+					div {
+						flex: 1;
+						box-sizing: border-box;
+						padding-left: 35/100rem;
+						p:nth-child(1) {
+							font-size: 14px;
+							span {
+								position: absolute;
+								right: 20/100rem;
+								font-size: 11px;
+								color: gray;
+							}
+						}
+						p:nth-child(2) {
+							box-sizing: border-box;
+							flex: 1;
+							padding-top: 30/100rem;
+							font-size: 12px;
+							font-weight: normal;
+							color: gray;
+							// position: relative;
+							display: flex;
+							justify-content: space-between;
+							span {
+								display: block;
+								width: 0.4rem;
+								height: 0.4rem;
+								line-height: 0.4rem;
+								border-radius: 50%;
+								background: red;
+								text-align: center;
+								color: white;
+								margin-right: 10px;
+								// position: absolute;
+								// top: 30/100rem;
+								// right: -160/100rem;
+								font-size: 11px;
+							}
+							i{
+								width: 5rem;
+								display: block;
+								overflow: hidden;
+								text-overflow:ellipsis;
+								white-space: nowrap;
+								font-style: normal;
+
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+		footer{
+	    position: fixed;
+		bottom:15/100rem;
+		border-top: 1px solid gray;
+	    width: 100%;
+		height: 80/100rem;
+		line-height:80/100rem;
+
+
+		.box{
+			display:flex;
+		    justify-content: space-around;
+		    font-size: 15px;
+		}
+	}
+
+
+
+
+	}
+</style>

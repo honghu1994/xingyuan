@@ -1,0 +1,206 @@
+<template>
+  <div class="zichang">
+     <header-top>
+      <div slot="left">
+        <img @click="$router.go(-1)" src="@/assets/img/back.png" />
+      </div>
+      <div slot="mid">资产信息</div>
+    </header-top>
+    <section>
+      <ul>
+        <li @click="toFixedAssets()">
+          <p>
+            <img src="../../assets/img/icon_012.png" />
+            <span>固定资产类</span>
+            <span class="ziti">{{asset}} 万㎡</span>
+            <span class="last iconfont icon-jiantou"></span>
+          </p>
+          <p>
+            <span>办公楼</span>
+            <span>厂房</span>
+            <span>宿舍</span>
+            <span>商铺</span>
+            <span>其他</span>
+          </p>
+        </li>
+        <li @click="toResource()">
+          <p>
+            <img src="../../assets/img/icon_07.png" />
+            <span>资源类</span>
+            <span class="ziti">{{resource}}万㎡</span>
+            <span class="last iconfont icon-jiantou"></span>
+          </p>
+          <p>
+            <span>耕地</span>
+            <span>林地</span>
+            <span>园地</span>
+            <span>草地</span>
+            <span>商业用地</span>
+            <span>住宅用地</span>
+          </p>
+        </li>
+        <li @click="toInvest()">
+          <p>
+            <img src="../../assets/img/icon_011.png" />
+            <span>投资类</span>
+            <span class="ziti">{{invest}} 万㎡</span>
+            <span class="last iconfont icon-jiantou"></span>
+          </p>
+          <p>
+            <span>股权投资</span>
+            <span>债权投资</span>
+            <span>企业投资</span>
+            <span>其他</span>
+          </p>
+        </li>
+        <li @click="toInvisibleAssets()">
+          <p>
+            <img src="../../assets/img/icon_09.png" />
+            <span>无形资产类</span>
+            <span class="ziti">{{invisible}}万㎡</span>
+            <span class="last iconfont icon-jiantou"></span>
+          </p>
+          <p>
+            <span>土地使用权</span>
+            <span>商标权</span>
+            <span>专利权</span>
+            <span>其他</span>
+          </p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</template>
+<script>
+import HeaderTop from "@/common/Header";
+	export default {
+		data() {
+			return {
+				asset:'',
+				invest:'',
+				resource:'',
+        invisible:'',
+        torganization_id:this.$store.state.loginInfo.sessionVal.organization_id
+			}
+    },
+    components: {
+      HeaderTop
+    },
+		mounted() {
+			this.getData()
+		},
+		methods: {
+			getData(){
+				this.$http
+        		.post("app_module2/getAssetInformationClassification",{
+          			torganization_id:'D440305101'
+        				}).then(result => {
+            if(result.data.code==200){
+              this.resource=result.data.data.pageList[0].money;
+              this.asset=result.data.data.pageList[1].money;
+              this.invest=result.data.data.pageList[2].money;
+              this.invisible=result.data.data.pageList[3].money;
+            }
+			  })
+			},
+			//去固定资产
+			toFixedAssets(){
+				this.$router.push('/fixedAssets');
+			},
+			//去资源类
+			toResource(){
+				this.$router.push('/resource');
+			},
+			//去投资类
+			toInvest(){
+				this.$router.push('/invest');
+			},
+			toInvisibleAssets(){
+				this.$router.push('/invisibleAssets');
+			},
+			//回退
+			hui1() {
+				this.$router.go(-1);
+			},
+			//跳转
+			 daiban() {
+				this.$router.push('/daiban');
+			}
+		}
+	}
+</script>
+<style lang="less">
+.zichang {
+  section {
+    border: 1px soild black;
+    width: 100%;
+    height: 1150/100rem;
+    border-top: .2rem solid #f2f2f2;
+    position: fixed;
+    ul {
+      border: 1px soild black;
+      width: 100%;
+      height: 1150/100rem;
+      position: absolute;
+      top: 20/100rem;
+
+      li {
+        border-bottom: 1px solid gainsboro;
+        width: 100%;
+        height: 170/100rem;
+        background: white;
+        padding-left: 30/100rem;
+        img {
+          width: 30px;
+          position: absolute;
+          top:30/100rem;
+        }
+        p:nth-child(1) {
+          padding-top: 30/100rem;
+          position: relative;
+          font-size: 16px;
+          span:nth-child(2) {
+            padding-left: 90/100rem;
+          }
+          span:nth-child(3) {
+            position: absolute;
+          left: 3.5rem;
+          }
+          .last {
+            position: absolute;
+            right: 80/100rem;
+            top: 50/100rem;
+          }
+        }
+        p:nth-child(2) {
+          font-size: 14px;
+          padding-top: 20/100rem;
+          color: gray;
+
+          span:nth-child(1) {
+            padding-left: 95/100rem;
+          }
+          span:nth-child(2) {
+            padding-left: 20/100rem;
+          }
+          span:nth-child(3) {
+            padding-left: 20/100rem;
+          }
+          span:nth-child(4) {
+            padding-left: 20/100rem;
+          }
+          span:nth-child(5) {
+            padding-left: 20/100rem;
+          }
+          span:nth-child(6) {
+            padding-left: 20/100rem;
+          }
+        }
+      }
+    }
+  }
+  .ziti{
+    font-size: 16px;
+  }
+}
+</style>

@@ -1,0 +1,112 @@
+.home {
+        .contain {
+            background:url(../assets/img/homebg.png);
+            background-size: 100% 100%;
+//          background: cover;
+            header {
+                display: flex;
+                padding-top: 30px;
+                .header_left {
+                    margin-left: 35%;
+                }
+                .header_right {
+                    margin-left: 20%;
+                    margin-top: 10px;
+                    img {
+                        width: 18px;
+                        height: 18px;
+                        padding-left: 25px;
+                    }
+                }
+            }
+            section {
+                .section_left {
+//                  border: 1px solid brown;
+                    min-height: 540px;
+                    position: relative;
+                    div {
+//                      border: 1px solid yellow;
+                        width: 130px;
+                        height: 130px;
+                        position: relative;
+                        p:nth-child(1) {
+                            img {
+                                width: 100px;
+                                height: 100px;
+                            }
+                        }
+                        p:nth-child(2) {
+                            position: absolute;
+                            top: -20px;
+                            left: 35px;
+                            img {
+                                width: 25px;
+                                height: 25px;
+                            }
+                        }
+                        p:nth-child(3) {
+                            color: white;
+                            font-size: 13px;
+                            position: absolute;
+                            top: 35px;
+                            left: 23px;
+                        }
+                    }
+                    .zhu1 {
+                        position: absolute;
+                        top: 50px;
+                        left: 320px;
+                    }
+                    .zhu2 {
+                        position: absolute;
+                        top: 120px;
+                        left: 230px;
+                    }
+                    .zhu3 {
+                        position: absolute;
+                        top: 140px;
+                        left: 400px;
+                    }
+                    .zhu4 {
+                        position: absolute;
+                        top: 290px;
+                        left: 310px;
+                    }
+                    .zhu5 {
+                        position: absolute;
+                        top: 50px;
+                        left: 900px;
+                    }
+                    .zhu6 {
+                        position: absolute;
+                        top: 120px;
+                        left: 810px;
+                    }
+                    .zhu7 {
+                        position: absolute;
+                        top: 150px;
+                        left: 960px;
+                    }
+                    .zhu8 {
+                        position: absolute;
+                        top: 290px;
+                        left: 810px;
+                    }
+                    .zhu9 {
+                        position: absolute;
+                        top: 325px;
+                        left: 909px;
+                    }
+                }
+                .section_right {
+                    position: absolute;
+                    top: 150px;
+                    left: 460px;
+                    img {
+                        width: 340px;
+                        height: 420px;
+                    }
+                }
+            }
+        }
+    }

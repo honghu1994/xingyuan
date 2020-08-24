@@ -1,0 +1,98 @@
+<template>
+    <div class="zhengceXiangQing">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">政策法规</div>
+        </header-top>
+        <section >
+            <scroll
+                class="scroll-content"
+                ref="scroll"
+            >    
+                <h4>{{policiesDetailData.policyName}}</h4>
+                <p class="info-sources">信息来源:{{policiesDetailData.sources}}<span>提供日期</span>{{policiesDetailData.informationDate}}</p>
+                <p class="info-content" v-html="policiesDetailData.content" style="padding-bottom:30px;"></p>
+            </scroll>
+        </section>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+import Scroll from '@/common/Scroll'
+export default {
+    data(){
+        return{
+            id:this.$route.query.id,
+            policiesDetailData:{},
+            user_id:this.$store.state.loginInfo.sessionVal.uSER_ID
+        }
+    },
+    components:{
+        HeaderTop,Scroll
+    },
+    methods: {
+
+			getWorkDynamicsList(){//列表
+				this.$http.post('app_Module3/policiesDetail',{policies_id:this.id,user_id:this.user_id}).then(res=>{
+                // console.log(res)
+                if(res.data.code == 200){
+                    this.policiesDetailData = res.data.data.policiesDetail
+                }
+            })
+			}
+		},
+		mounted(){
+			this.getWorkDynamicsList()
+		}
+}
+</script>
+
+<style lang='less'>
+
+ .zhengceXiangQing{
+
+      section {
+		/*border: 1/100rem solid black;*/
+		width: 100%;
+        // margin-bottom: 2rem;
+        // padding-bottom: 60px;
+        h4{
+            padding-top: 8px;
+            font-size: 16px;
+            /* height:40px; */
+            line-height: 26px;
+            text-align: center;
+        }
+        .info-sources{
+            padding-top:10px;
+            padding-bottom:10px;
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+            /* height: 30px; */
+            line-height: 20px;
+        }
+        .info-content{
+            /* text-indent: 2em; */
+            font-size: 14px;
+            padding: 0px 6px;
+            line-height: 18px;
+            text-align: left!important;
+        }
+    }
+}
+.scroll-content{
+    overflow: hidden;
+    position: absolute;
+    top: 1.18rem;
+    bottom: 0px;
+    left:0;
+    right:0;
+    border-top: 1px solid #ddd;
+    padding:0 10px;
+
+}
+</style>

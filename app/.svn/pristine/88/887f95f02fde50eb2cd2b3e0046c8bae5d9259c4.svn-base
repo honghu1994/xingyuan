@@ -1,0 +1,303 @@
+<template>
+	<div class="qingjiaguanli">
+		<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>请假申请</h1>
+		</header>
+
+		<section>
+			<div class="tabe1">
+				<ul>
+					<li>
+						<span>申请人：</span>
+						<span>{{findPersonnel.personnel_name}}</span>
+					</li>
+					<li>
+						<span>所属机构：</span>
+						<span>{{findPersonnel.org_name}}</span>
+					</li>
+					<li>
+						<span>职位：</span>
+						<span>{{findPersonnel.post}}</span>
+					</li>
+					<li>
+						<span>目的地：</span>
+						<input type="text" v-model="destinationInput" placeholder="请填写你的目的地">
+					</li>
+					<li>
+						<span style="display:inline-block;vertical-align: top;padding-top:5px;">请假事由：</span>
+						<textarea name="" id="" v-model="l_reason" cols="30" rows="5" placeholder="最多输入120个字" maxlength="12"></textarea>
+					</li>
+				</ul>
+
+				<div class="time">
+					<div class="block">
+						<span class="demonstration">离深时间：</span>
+						<el-date-picker v-model="leave_time" type="date" placeholder="选择日期">
+						</el-date-picker>
+					</div>
+					<div class="block">
+						<span class="demonstration">返深时间：</span>
+						<el-date-picker v-model="come_time" type="date" placeholder="选择日期">
+						</el-date-picker>
+					</div>
+				</div>
+
+				<div class="tu">
+					<p>附件：</p>
+					<upload-file @uploadImageData = 'uploadImageData'></upload-file>
+				</div>
+				<!-- <button @click="leaveApply">提交</button> -->
+				<el-button
+					type="primary"
+					@click="leaveApply"
+					v-show="isShowBtn"
+					v-loading.fullscreen.lock="fullscreenLoading">
+					提交
+				</el-button>
+			</div>
+			<div>
+			</div>
+		</section>
+	</div>
+</template>
+
+<script>
+	import { Toast } from 'vant';
+	import UploadFile from '@/common/UploadFile'
+	export default {
+		data() {
+			return {
+				// value1: '',
+				//value2: '',
+
+				//上传文件
+
+				//时间插件
+				pickerOptions: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					},
+					shortcuts: [{
+						text: '今天',
+						onClick(picker) {
+							picker.$emit('pick', new Date());
+						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24);
+							picker.$emit('pick', date);
+						}
+					}, {
+						text: '一周前',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', date);
+						}
+					}]
+				},
+				leave_time: '',
+				come_time: '',
+				personnel_code:this.$store.state.loginInfo.sessionVal.personnel_id,
+				organization_id:this.$store.state.loginInfo.sessionVal.organization_id,
+				findPersonnel:{},
+				destinationInput:'',
+				l_reason:'',
+				imageUrl:[],
+				code:'',
+				fullscreenLoading:false
+			}
+		},
+		components:{
+			UploadFile
+		},
+		computed:{
+			isShowBtn(){
+				if(this.leave_time && this.come_time && this.l_reason){
+					return true
+				}else{
+					return false
+				}
+			}
+		},
+		methods: {
+			uploadImageData(data){
+				this.imageUrl = data
+				// console.log(this.imageUrl)
+			},
+
+			hui1() {
+				this.$router.go(-1);
+
+			},
+			fomateDate(time){
+				if (!time) return ''
+				let t = new Date(time).getTime();
+				let data = new Date(t)
+				let y = data.getFullYear()
+				let m = data.getMonth()+1
+				let d = data.getDate()
+				let fmt = y+'-'+m+'-'+d
+				return fmt
+			},
+			getGoleaveApply(){
+        		console.log(this.personnel_code)
+				this.$http.post('app_Module3/goleaveApply',{licence_personnel_code:this.personnel_code}).then(res=>{
+					console.log(res)
+					if(res.data.code == 200){
+						this.findPersonnel = res.data.data.findPersonnelById
+						this.code = res.data.data.findPersonnelById.licence_personnel_code
+						// console.log(this.code)
+					}
+				})
+			},
+			leaveApply(){
+				this.fullscreenLoading = true;
+				let l_tine=this.fomateDate(this.leave_time)
+				let c_tine=this.fomateDate(this.come_time)
+				let name = this.$store.state.loginInfo.sessionVal.nAME
+				// console.log(this.$store.state.loginInfo.sessionVal.nAME)
+				if(this.l_reason.length<2){
+					Toast('请假事由不能少于2');
+					this.fullscreenLoading = false;
+					return
+				}
+				this.$http.post('app_Module3/leaveApply',
+					{place:this.destinationInput,
+					going_out:this.l_reason,
+					leave_time:l_tine,
+					come_time:c_tine,
+					currentUser:name,
+					torganization_id:this.organization_id,
+					// path:'',
+					// img_name:'',
+					imageData:JSON.stringify(this.imageUrl),
+					licence_personnel_code:this.code
+				}).then(res=>{
+					console.log(res)
+					if(res.data.code == 200){
+						this.fullscreenLoading = false;
+						Toast.success('提交成功');
+					}else{
+						this.fullscreenLoading = false;
+						Toast.fail('提交失败');
+					}
+				})
+			}
+
+		},
+		mounted(){
+			this.getGoleaveApply()
+
+		}
+	}
+</script>
+
+<style lang="less">
+	.qingjiaguanli {
+		position: fixed;
+		top: -10px;
+		right:0;
+		left: 0;
+		bottom:0;
+		background: #fff;
+		z-index: 100;
+
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			z-index: 999;
+			position: fixed;
+			top: 0;
+			left: 0;
+			color: white;
+			line-height: 124/100rem;
+			h1 {
+				font-size: 20px;
+				font-weight: normal;
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		section {
+			/*border: 1px solid black;*/
+			width: 100%;
+			// height: 1400/100rem;
+			position: absolute;
+			top: 128/100rem;
+			.tabe1 {
+				ul {
+					padding-top: 30/100rem;
+					li {
+						padding-left: 30/100rem;
+						padding-top: 20/100rem;
+						font-size: 14px;
+						input{
+							width:70%;
+							height: 26px;
+							line-height: 26px;
+							padding-left: 5px;
+							color: #666;
+						}
+						textarea{
+							padding:2px;
+							color: #666;
+							font-size: 14px;
+							width:67%;
+						}
+					}
+				}
+				.time {
+					.block {
+						padding-left: 30/100rem;
+						padding-top: 0.2rem;
+						.demonstration {
+							font-size: 14px;
+						}
+						.el-input__inner {
+							height: 70/100rem;
+							line-height: 70/100rem;
+							width: 68%;
+						}
+					}
+				}
+				.tu {
+					padding-top: 0.2rem;
+					position: relative;
+					p{
+						font-size: 14px;
+						padding-left: 30/100rem;
+					}
+
+				}
+				button {
+					// margin-top: 30/100rem;
+					margin-left: 5%;
+					width: 90%;
+					height: 70/100rem;
+					// line-height: 70/100rem;
+					background: rgb(64, 158, 255);
+					color: white;
+					font-size: 14px;
+					outline: none;
+					border:none;
+				}
+			}
+		}
+	}
+	.el-loading-mask{
+		background-color:rgba(0,0,0,0.2)
+	}
+</style>

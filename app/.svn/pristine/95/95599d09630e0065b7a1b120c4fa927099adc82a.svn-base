@@ -1,0 +1,336 @@
+<template>
+    <div class="require-info">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">{{title}}</div>
+        </header-top>
+        <div >
+            <ul>
+                <li :class="{isActive:type == 1}" @click="changeTab(1)">需求信息</li>
+                <li :class="{isActive:type == 2}" @click="changeTab(2)">需求登记</li>
+            </ul>
+            <div v-if="type == 1">
+                <scroll
+                    class="scroll-content"
+                    ref="scroll"
+                    :probe-type='3'
+                    :pull-up-load="true"
+                    @pullingup='loadMore'
+                > 
+                    <div @click="requireRegister(item.id)" v-for="item in demandInformationList" :key="item.id" class="require-item">
+                        <div class="item item-info" >
+                            <div style="padding-left:10px;">{{item.demandContent}}</div>
+                            <div class="mid"></div>
+                            <div class="right"><span class="iconfont icon-jiantou"></span></div>
+                        </div>
+                        <div class="item item-info" >
+                            <div class="left">需求类型</div>
+                            <div class="mid">{{item.landUseType}}</div>
+                        </div>
+                        <div class="item item-info">
+                            <div class="left">面积</div>
+                            <div class="mid">{{item.maxArea}}㎡</div>
+                        </div>
+                        <div class="item item-info">
+                            <div class="left">联系人</div>
+                            <div class="mid">{{item.contacts}}</div>
+                        </div>
+                        <div class="item item-info">
+                            <div class="left">联系电话</div>
+                            <div class="mid">{{item.contactNumber}}</div>
+                            <div class="right" style="font-size:0.32rem;">{{item.releaseTime | dateFormat}}</div>
+                        </div>
+                        <div style="border-bottom:5px solid #ddd;"></div>
+                    </div>
+                    <p v-if="isShowMessage" style="text-align:center;color:#666; height:20px;margin-top:5px;font-size:13px;">没有更多数据</p>
+                </scroll>
+            </div>
+            <div v-if="type == 2">
+                <div class="content">
+                    <div class="item">
+                        <div class="left">需求类型</div>
+                        <div class="mid">
+                            <input type="text" v-model="requireType" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">面积</div>
+                        <div class="midArea">
+                            <input type="number" v-model="minArea" placeholder="请输入">
+                            <span>--</span>
+                            <input type="number" v-model="maxArea" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">金额</div>
+                        <div class="midArea">
+                            <input type="number" v-model="minMoney" placeholder="请输入">
+                            <span>--</span>
+                            <input type="number" v-model="maxMoney" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">位置</div>
+                        <div class="mid">
+                            <input type="text" v-model="position" placeholder="请输入">
+                        </div>
+                        <!-- <div class="right"><span class="iconfont icon-jiantou"  @click="assetsLocation"></span></div> -->
+                    </div>
+                    <!-- <div class="item">
+                        <div class="left">面积</div>
+                        <div class="mid">1000</div>
+                    </div> -->
+                    <div class="item">
+                        <div class="left">用途</div>
+                        <div class="" style="width:100px;">
+                            <van-dropdown-menu>
+                                <van-dropdown-item v-model="purpose" :options="purposeList" />
+                            </van-dropdown-menu>
+                            
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">公司名称</div>
+                        <div class="mid">
+                            <input type="text" v-model="company" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">所属行业</div>
+                        <div class="" style="width:100px;">
+                            <van-dropdown-menu>
+                                <van-dropdown-item v-model="industry" :options="jurisdictionAndArea" />
+                            </van-dropdown-menu>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">联系人</div>
+                        <div class="mid">
+                            <input type="text" v-model="contact" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="left">联系电话</div>
+                        <div class="mid">
+                            <input type="number" v-model="phoneNum" placeholder="请输入">
+                        </div>
+                    </div>
+                    <div class="attachment">
+                        
+                    </div>
+                </div>
+                <div style="text-align:center;width:60%; margin:30px auto;" v-if="isShowBtn">
+                    <van-button type="info" size="large" @click.native="submitRequire" style="height:40px; line-height:40px;">提交</van-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+import Scroll from '@/common/Scroll'
+export default {
+    data(){
+        return{
+            title:'需求信息',
+            nowPage:0,
+            demandInformationList:[],
+            requireType:'',
+            minArea:'',maxArea:'',minMoney:'',maxMoney:'',position:'',company:'',contact:'',phoneNum:'',
+            jurisdictionAndArea: [//所属行业
+                { text: '请选择', value: 0 },
+            ],
+            industry:0,//所属行业
+            purposeList: [//用途
+                { text: '请选择', value: 0 },
+            ],
+            purpose:0,//用途
+            isShowMessage:false,
+            type:1,
+
+        }
+    },
+    components:{
+        HeaderTop,Scroll
+    },
+    computed:{
+        isShowBtn(){
+            if(this.requireType && this.minArea && this.maxArea && this.company && this.contact && this.phoneNum && this.maxMoney){
+                return true
+            }else{
+                return false
+            }
+        }
+    },
+    methods: {
+        changeTab(n){
+            this.type = n
+        },
+        submitRequire(){
+            this.$http.post('demandRegistration/save',{
+                demandContent:this.requireType,
+                minArea:this.minArea,
+                maxArea:this.maxArea,
+                minPrice:this.minMoney,
+                maxPrice:this.maxMoney,
+                tenantUnitName:this.company,
+                contacts:this.contact,
+                contactNumber:this.phoneNum,  
+                rentSeekingAddress:this.position,  
+                industrialTypes:this.industry,  
+            }).then(res=>{
+                console.log(res)
+                if(res.data.code == 200){
+                    // this.demandInformationList = res.data.data.data
+                }
+            })
+        },
+        onClick(name, title) {
+            this.title=title
+        },
+        assetsLocation(){
+            this.$router.push({path:'/assetLocation'})
+        },
+        requireRegister(id){
+            this.$router.push({path:'/requireRegister',query:{id:id}})
+        },
+        getDemandInformationList(){//列表
+            this.nowPage = this.nowPage + 1
+            this.$http.post('demandRegistration/getDemandInformationListPage',{nowPage:this.nowPage}).then(res=>{
+                if(res.data.code == 200){
+                    this.demandInformationList.push(...res.data.data.data)
+                    this.pagesCount = res.data.data.pageUtil.pageCount
+                    this.$refs.scroll.finishPullUp()
+                     console.log(this.demandInformationList)
+                }
+            })
+        },
+        getJurisdictionAndArea(){
+            this.$http.post('demandRegistration/getJurisdictionAndArea').then(res=>{
+                // console.log(res)
+                if(res.data.code == 200){
+                   for(let i=0;i<res.data.data.industrialTypes.length;i++){
+                       this.jurisdictionAndArea.push(res.data.data.industrialTypes[i]) 
+                   }
+                   for(let i=0;i<res.data.data.assets.length;i++){
+                       this.purposeList.push(res.data.data.assets[i]) 
+                   }
+                }
+            })
+        },
+        loadMore(){
+            // console.log('加载更多')
+            console.log(this.nowPage)
+            console.log(this.pagesCount)
+            if( this.nowPage >= this.pagesCount ){
+                this.isShowMessage = true
+                return
+            }
+            this.getDemandInformationList()
+        },
+    },
+    mounted(){
+        this.getDemandInformationList()
+        this.getJurisdictionAndArea()
+    }
+}
+</script>
+<style lang='less' scoped>
+    ul{
+        width:100%;
+        box-sizing: border-box;
+        display: flex;
+        height: 40px;
+        
+        li{
+            width:50%;
+            line-height: 40px;
+            text-align: center;
+            font-size: 16px;
+            position: relative;
+            color: #666;
+        }
+        .isActive{
+             color: rgb(111, 119, 254);
+            &::after{
+                content: "";
+                position: absolute;
+                width:70px;
+                border-bottom:2px solid rgb(111, 119, 254);
+                bottom:0;
+                left:50%;
+                transform: translateX(-50%);
+               
+            }
+        }
+    }
+    .item{
+        font-size: 15px;
+        display: flex;
+        height: 46px;
+        border-bottom: 1px solid #f1f1f1;
+        align-items: center;
+        color:#333;
+        .left{
+            width: 100px;
+            text-align: left;
+            box-sizing: border-box;
+            padding-left:10px;
+        }
+        .mid{
+            flex:1;
+            text-align: left;
+            input{
+                width:90%;
+                height:40px;
+                font-size: 15px;
+                border: none;
+            }
+        }
+        .right{
+            line-height: 46px;
+            font-size: 36px;
+            padding-right: 10px;
+        }
+    }
+    .item-info{
+        border-bottom: none;
+        height: 36px;
+        .right{
+            line-height: 30px;
+            font-size: 15px;
+            padding-right: 10px;
+        }
+    }
+    .midArea{
+        display: flex;
+        input{
+            width: 80px;
+            height:40px;
+            font-size: 15px;
+            border: none;
+        }
+        span{
+            display: inline-block;
+            line-height: 40px;
+            margin: 0 5px;
+        }
+    }
+    .scroll-content{
+        overflow: hidden;
+        position: absolute;
+        top: 2.18rem;
+        bottom: 0px;
+        left:0;
+        right:0;
+        border-top: 1px solid #ddd;
+        padding:0 10px;
+        z-index: -1;
+
+    }
+   
+    
+</style>

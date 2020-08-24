@@ -1,0 +1,250 @@
+<template>
+	<div class="zaiguanzhengzhao">
+		<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>在管证照</h1>
+		</header>
+
+		<section>
+			<div class="nav">
+				<select v-model="licenceType" @change="changeLicenceType">
+					<option value>全部</option>
+					<option v-for="item in selectLicenceTypeData" :key="item.dictionaries_id" :value="item.licence_type">{{item.licence_type}}</option>
+
+				</select>
+			</div>
+
+			<div class="tabe1">
+				<van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+            		<van-list v-model="loading" :finished="finished" finished-text="没有更多数据了" @load="onLoad">   
+				<!-- <ul> -->
+						<div class="inLicence" @click="goInLicenceListData(item.licence_id)" v-for="(item,index) in inLicenceListData" :key="index">
+							<p>
+								<span>{{item.license_name}}</span>
+							</p>
+							<p>
+								<span>证照编号：</span>
+								<span>{{item.license_number}}</span>
+							</p>
+							<p>
+								<span>{{item.receiving_status}}</span>
+								<span>{{item.collection_date}}</span>
+								<span>申领人：</span>
+								<span>{{item.personnel_name}}</span>
+							</p>
+						</div>
+					</van-list>
+        		</van-pull-refresh>
+				<!-- </ul> -->
+					
+			</div>
+		</section>
+	</div>
+</template>
+
+<script>
+	import Scroll from '@/common/Scroll'
+	export default {
+		data() {
+			return {
+				licenceType: '', //被选中
+				selectLicenceTypeData: [], //下拉框
+				inLicenceListData: [], //列表
+				nowpage: 0,
+				pagesCount:1,
+            	isShowMessage:false,
+				torganization_id: this.$store.state.loginInfo.sessionVal.organization_id,
+				// vant
+				loading: false,   //是否处于加载状态
+				finished: false,  //是否已加载完所有数据
+				isLoading: false,   //是否处于下拉刷新状态
+			}
+		},
+		components:{
+			Scroll
+		},
+		methods: {
+			hui1() {
+				this.$router.go(-1);
+			},
+			//跳转
+			goInLicenceListData(id) {
+				this.$router.push({
+					path: '/zaiguanzhengzhaoXQ',
+					query: {
+						id: id
+					}
+				});
+			},
+			onLoad(){
+				this.getInLicenceList()
+			},
+			onRefresh(){
+				this.isLoading = false;
+			},
+			getInLicenceList() {
+				this.loading = true
+				this.nowpage = this.nowpage + 1
+				this.$http.post('app_Module3/inLicenceList', {
+					nowpage: this.nowpage,
+					torganization_id: this.torganization_id,
+					licence_type: this.licenceType
+				}).then(res => {
+					if(res.data.code == 200) {
+						this.selectLicenceTypeData = res.data.data.selectLicenceType //下拉框
+						// this.inLicenceListData = res.data.data.inLicenceList //列表
+						this.inLicenceListData.push(...res.data.data.inLicenceList)
+						this.pagesCount = res.data.data.page.pageCount
+						this.loading = false;   //数据请成功后
+                        if(this.nowpage >=this.pagesCount){
+                            this.finished = true;
+                        }
+					}
+				})
+			},
+			changeLicenceType() {
+				this.inLicenceListData = []
+				this.nowpage = 0
+				this.getInLicenceList()
+			},
+			loadMore(){
+				// console.log('加载更多')
+				console.log(this.nowpage)
+				console.log(this.pagesCount)
+				if( this.nowpage >= this.pagesCount ){
+					this.isShowMessage = true
+					return
+				}
+				this.getInLicenceList()
+			},
+
+		},
+
+		mounted() {
+			this.getInLicenceList()
+		}
+	}
+</script>
+
+<style lang="less">
+	.zaiguanzhengzhao {
+		header {
+			width: 100%;
+			height: 118/100rem;
+			background: rgb(111, 119, 254);
+			z-index: 999;
+			position: fixed;
+			top: 0;
+			left: 0;
+			color: white;
+			line-height: 124/100rem;
+			h1 {
+				font-size: 20px;
+				font-weight: normal;
+				text-align: center;
+			}
+			.left {
+				position: absolute;
+				top: 40/100rem;
+				left: 5%;
+				img {
+					width: 40/100rem;
+					height: 40/100rem;
+				}
+			}
+		}
+		section {
+			/*border: 1px solid black;*/
+			/*width: 100%;*/
+			height: 1400/100rem;
+			position: relative;
+			top: 118/100rem;
+			/*background: rgba(242, 242, 242);*/
+			overflow: auto;
+			.nav {
+				/*border: 1px solid red;*/
+				z-index: 99;
+				position: absolute;
+				top: 0/100rem;
+				padding-left: 30/100rem;
+				background: white;
+				position: fixed;
+				left: 0;
+				top: 1.18rem;
+				select {
+					width: 690/100rem;
+					height: 60/100rem;
+					background: rgb(242, 242, 242);
+					margin-top: 20/100rem;
+					border: none;
+					font-size: 15px;
+	
+				}
+			}
+			.tabe1 {
+				// ul {
+				// 	position: absolute;
+				// 	top: 60/100rem;
+				// 	width: 100%;
+				// 	margin-bottom: 1.5rem;
+				margin-top: 30px;
+					.inLicence {
+						/*width: 100%;*/
+						height: 260/100rem;
+						background: white;
+						padding-left: 40/100rem;
+						border-bottom: 10px solid rgb(242, 242, 242);
+						p:nth-child(1) {
+							padding-top: 40/100rem;
+							span:nth-child(1) {
+								font-size: 16px;
+								
+							}
+						}
+						p:nth-child(2) {
+							font-size: 13px;
+							color: gray;
+							padding-top: 40/100rem;
+							position: relative;
+							span:nth-child(2) {
+								padding-left: 10/100rem;
+							}
+						}
+						p:nth-child(3) {
+							border-top: 1px solid rgb(242, 242, 242);
+							font-size: 13px;
+							color: gray;
+							padding-top: 30/100rem;
+							position: relative;
+							top: 20/100rem;
+							span:nth-child(2) {
+								padding-left: 0/100rem;
+							}
+							span:nth-child(3) {
+								position: absolute;
+								left: 60%;
+							}
+							span:nth-child(4) {
+								position: absolute;
+								left: 75%;
+							}
+						}
+					}
+					li:nth-child(1) {
+						margin-top: 20/100rem;
+					}
+				// }
+			}
+		}
+	}
+	.scroll-inLicence-content{
+      overflow: hidden;
+      position: absolute;
+      top: 1rem;
+      bottom: 0px;
+      left:0;
+      right:0;
+      border-top: 1px solid #ddd;
+	  padding:0 10px;
+  }
+</style>

@@ -1,0 +1,96 @@
+<template>
+	<div class="home">
+
+		<div class="contain">
+			<header>
+				<div class="header_left"><img src="../assets/img/1.png"></div>
+				<div class="header_right">
+					<img src="../assets/img/xi.png">
+					<img src="../assets/img/renyuan.png">
+					<img src="../assets/img/back.png">
+				</div>
+			</header>
+
+			<section>
+				<div class="section_left">
+					<div class="zhu1">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home8.png"></p>
+						<p>资产管理</p>
+					</div>
+					<div class="zhu2">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home2.png"></p>
+						<p>合同管理</p>
+					</div>
+					<div class="zhu3">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home9.png"></p>
+						<p>资产交易</p>
+					</div>
+					<div class="zhu4">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home1.png"></p>
+						<p>财务管理</p>
+					</div>
+					<div class="zhu5">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home4.png"></p>
+						<p>空间统筹</p>
+					</div>
+					<div class="zhu6">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home5.png"></p>
+						<p>预警监管</p>
+					</div>
+					<div class="zhu7">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home3.png"></p>
+						<p>集体经济<br>&nbsp;&nbsp;&nbsp;总览</p>
+					</div>
+					<div class="zhu8">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home6.png"></p>
+						<p>证照监管</p>
+					</div>
+					<div class="zhu9"  @click="run9()">
+						<p><img src="../assets/img/homeguang.png"></p>
+						<p><img src="../assets/img/home7.png"></p>
+						<p>转型发展 <br>&nbsp;&nbsp;&nbsp;项目</p>
+					</div>
+				</div>
+
+				<div class="section_right">
+					<img src="../assets/img/homemap.png">
+				</div>
+			</section>
+
+		</div>
+
+	</div>
+</template>
+
+<script>
+	export default {
+		name: 'home',
+		data() {
+			return {}
+		},
+		methods: {
+			run9() {
+				this.$router.push('/support');
+			},
+			
+			
+		}
+		
+		
+		
+	}
+</script>
+
+<style lang="less">
+	
+	 @import "../style/home.less";
+	
+</style>

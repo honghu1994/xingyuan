@@ -1,0 +1,239 @@
+<template>
+	<div class="daijiaoyi">
+		<!--<header>
+			<img @click="hui1()" class="left" src="@/assets/img/back.png">
+			<h1>待交易资产</h1>
+		</header>-->
+		<header-top>
+			<div slot="left">
+				<img @click="$router.go(-1)" src="@/assets/img/back.png">
+			</div>
+			<div slot="mid">待交易资产</div>
+		</header-top>
+		<article>
+			<select v-model="value" @change="changeVal(value)">
+				<option value>请选择</option>
+				<option :value="item.subordinate" v-for="item in selectArr" :key="item.value">{{item.company_name}}</option>
+			</select>
+
+		</article>
+		<nav>
+			<ul>
+				<li :class="{active:type==205}" @click="page(205)">写字楼</li>
+				<li :class="{active:type==201}" @click="page(201)">厂房</li>
+				<li :class="{active:type==203}" @click="page(203)">商铺</li>
+				<li :class="{active:type==206}" @click="page(206)">宿舍</li>
+				<li :class="{active:type==102}" @click="page(102)">其他</li>
+			</ul>
+		</nav>
+		<section>
+			<div class="tabe1" >
+				<scroll
+					class="scroll-content"
+					ref="scroll"
+					:probe-type='3'
+					:pull-up-load="true"
+					@pullingup='loadMore'
+				>
+					<!-- <ul> -->
+						<div class="tradedAssets" v-for="item in tradedAssets" :key="item.assets_id" @click="goTradedAssets(item.assets_id)">
+							<h1>{{item.assets_name}}</h1>
+							<p>
+								<span>{{item.assets_nature}}</span>
+								<span>{{item.name}}</span>
+								<span>待交易</span> 
+								<span>建筑面积（m²）：{{item.built_area}}</span>
+							</p>
+							<p>
+								<span>{{item.street_name}}</span>
+								<span>{{item.company_name}}</span>
+							</p>
+						</div>
+					<!-- </ul> -->
+						<p v-if="isShowMessage" style="text-align:center;color:#666; height:20px;margin-top:5px;font-size:13px;">没有更多数据</p>
+				</scroll>
+			</div>
+		</section>
+	</div>
+</template>
+
+<script>
+	import HeaderTop from '@/common/Header'
+	import Scroll from '@/common/Scroll'
+	export default {
+		data() {
+			return {
+			    //切换面板
+				type: 205,
+				selectArr:[],
+				value:'',
+				nowPage:0,
+				pagesCount:1,
+            	isShowMessage:false,
+				tradedAssets:[],
+				id:this.$store.state.loginInfo.sessionVal.organization_id,
+			}
+		},
+		components: {
+			HeaderTop,Scroll
+		},
+		methods: {
+			hui1() {
+				this.$router.go(-1);
+			},
+			changeVal(val){
+				console.log(val)
+				this.id = val
+				this.tradedAssets = []
+				this.nowPage = 0
+				this.getTradedAssets()
+			},
+			//切换面板
+			page(val) {
+				this.nowPage = 0
+				this.type = val;
+				this.tradedAssets = []
+				this.getTradedAssets()
+			},
+			goTradedAssets(id){//去待交易详情页
+				this.$router.push({path:'/changyekongjian/pendingTransactionsDetail',query:{assets_id:id}})
+			},
+			getTradedAssets(){//列表
+				this.nowPage = this.nowPage + 1
+				this.$http.post('app_module2/getTradedAssets',{assets_category:this.type,nowPage:this.nowPage,torganization_id:this.id}).then(res=>{
+					console.log(res)
+					if(res.data.code == 200){
+						// this.tradedAssets = res.data.data.dataList
+						this.tradedAssets.push(...res.data.data.dataList)
+						this.pagesCount = res.data.data.PageUtil.pageCount
+						setTimeout(()=>{
+						this.$refs.scroll.refresh()
+						this.$refs.scroll.finishPullUp()
+						}, 100);
+						
+					}
+				})
+			},
+			getStreetStockCompany(){//下拉菜单
+				this.$http.post('app_module2/getStreetStockCompany',{torganization_id:'D440305101'}).then(res=>{
+					if(res.data.code == 200){
+						this.selectArr = res.data.data.pageList
+					}
+				})
+			},
+			loadMore(){
+				// console.log('加载更多')
+				console.log(this.nowPage)
+				console.log(this.pagesCount)
+				if( this.nowPage >= this.pagesCount ){
+					this.isShowMessage = true
+					return
+				}
+				this.getTradedAssets()
+			},
+
+		},
+		mounted(){
+			this.getTradedAssets()
+			this.getStreetStockCompany()
+		}
+	}
+</script>
+
+<style lang="less" scoped>
+	.daijiaoyi {
+		article {
+			width: 100%;
+			height: 80/100rem;
+			position: absolute;
+			top: 120/100rem;
+			select {
+				width: 90%;
+				height: 70/100rem;
+				background: rgb(242, 242, 242);
+				border: none;
+				margin-left: 5%;
+			}
+		}
+		nav {
+			/*border: 1px solid red;*/
+			/*width: 100%;
+			height: 190/100rem;*/
+			background: #fff;
+			line-height: 90/100rem;
+			position: absolute;
+			top: 198/100rem;
+			z-index: 100;
+			margin-left: -8/100rem;
+			padding-left: -20/100rem;
+			font-weight: lighter;
+			ul {
+				li {
+					list-style-type: none;
+					border-bottom: 1px solid white;
+					width: 160/100rem;
+					height: 80/100rem;
+					line-height: 80/100rem;
+					float: left;
+					text-align: center;
+					margin-left: -10/100rem;
+					font-size: 16px;
+					
+				}
+			}
+		}
+		.active {
+			color: blue;
+			border-bottom: 1px solid blue;
+		}
+		section {
+			.tabe1 {
+					.tradedAssets{
+						border-bottom: 10px solid rgb(242, 242, 242);
+						width: 100%;
+						height: 200/100rem;
+						padding-left: 30/100rem;
+						h1 {
+							font-size: 17px;
+							font-weight: normal;
+						}
+						p {
+							margin-top: 30/100rem;
+							font-size: 13px;
+							font-weight:normal;
+							color: gray;
+							
+						}
+						p:nth-child(2) {
+							span:nth-child(2) {
+								margin-left: 10/100rem;
+								color: blue;
+							}
+							span:nth-child(3) {
+								margin-left: 30/100rem;
+							}
+							span:nth-child(4) {
+								margin-left: 10/100rem;
+							}
+						}
+						p:nth-child(3) {
+							span:nth-child(2) {
+								margin-left: 70/100rem;
+								color: blue;
+							}
+						}
+					}
+			}
+		}
+	}
+	.scroll-content{
+		overflow: hidden;
+		position: absolute;
+		top: 2.8rem;
+		bottom: 0px;
+		left:0;
+		right:0;
+		border-top: 1px solid #ddd;
+		padding:0 10px;
+	}
+</style>

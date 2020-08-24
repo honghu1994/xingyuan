@@ -1,0 +1,277 @@
+<template>
+  <div class="fixedAssets">
+    <header-top>
+      <div slot="left">
+        <img @click="$router.go(-1)" src="@/assets/img/back.png" />
+      </div>
+      <div slot="mid">资产信息</div>
+    </header-top>
+    <div class="zstitle">
+      <span>
+        南山区>>南头街道>>
+        <span style="color: #6f77fe">大新实业股份有限公司</span>
+      </span>
+    </div>
+    <div class="zstext-content">
+    
+    
+      <div class="zschoose">
+        <el-select v-model="value" @change="changeVal(value)" placeholder="请选择" size="small"  class="choose">
+          <el-option value>请选择</el-option>
+          <el-option
+            v-for="item in companyData"
+          :key="item.subordinate"
+          :label="item.company_name"
+          :value="item.subordinate">
+          </el-option>
+        </el-select>
+      </div>
+      <nav >
+        <ul>
+          <li :class="{active:type==205}" @click="page(205)">写字楼</li>
+          <li :class="{active:type==201}" @click="page(201)">厂房</li>
+          <li :class="{active:type==203}" @click="page(203)">商铺</li>
+          <li :class="{active:type==206}" @click="page(206)">宿舍</li>
+          <li :class="{active:type==102}" @click="page(102)">其他</li>
+        </ul>
+      </nav>
+      <section>
+        <div class="tabe1" >
+          <!-- <ul> -->
+          <scroll
+            class="scroll-content"
+            ref="scroll"
+          >
+            <div class="fixedAssets-content" v-for="item in tradedAssetsList" :key="item.assets_id" @click="goTradedAssets(item.assets_id)">
+              <h1>{{item.assets_name}}</h1>
+              <p>
+                <span>{{item.assets_nature}}</span>
+                <span>{{item.name}}</span>
+                <span>待交易</span> 
+                <span>建筑面积（m²）：{{item.built_area}}</span>
+              </p>
+              <p>
+                <span>{{item.street_name}}</span>
+                <span>{{item.company_name}}</span>
+              </p>
+            </div>
+          <!-- </ul> -->
+          </scroll>
+        </div>
+      </section>
+      </div>
+    </div>
+</template>
+
+<script>
+import HeaderTop from "@/common/Header";
+import Scroll from '@/common/Scroll'
+export default {
+  data() {
+    return {
+        companyData:[],
+        activeName: 'first',
+        subordinate:'D440305101001',
+        value: '',
+        id:this.$store.state.loginInfo.sessionVal.organization_id,
+        tradedAssetsList:[],
+        type:205,
+        nowPage:1,
+    };
+  },
+  components: {
+    HeaderTop,Scroll
+  },
+  mounted() {
+    this.getStreetStockCompanyList();
+    this.getTradedAssets()
+  },
+  methods: {
+    hui1() {
+				this.$router.go(-1);
+			},
+			changeVal(val){
+        console.log(val)
+        this.nowPage = 1
+				this.id = val
+				this.getTradedAssets()
+      },
+      goTradedAssets(id){//去待交易详情页
+				this.$router.push({path:'/fixedDetail01',query:{assets_id:id}})
+			},
+			//切换面板
+			page(val) {
+        this.type = val;
+        this.nowPage = 1
+				this.getTradedAssets()
+			},
+    getTradedAssets(){//列表
+      this.$http.post('app_module2/getTradedAssets',{assets_category:this.type,nowPage:this.nowPage,torganization_id:this.id}).then(res=>{
+        if(res.data.code == 200){
+          this.tradedAssetsList = res.data.data.dataList
+          console.log(this.tradedAssetsList)
+        }
+      })
+    },
+      // 去详情页
+    toDetail(){
+      this.$router.push('/fixedDetail');
+    },
+    getStreetStockCompanyList(){//下拉菜单
+      this.$http.post('app_module2/getStreetStockCompany',{torganization_id:this.id}).then(res=>{
+        if(res.data.code == 200){
+          this.companyData = res.data.data.pageList
+          console.log(res.data.data.pageList)
+        }
+      })
+    }
+  },
+};
+</script>
+
+<style lang='less' scoped>
+
+.fixedAssets {
+  width: 100%;
+  .zstitle {
+    font-size: 14px;
+    // border-top: 2px solid #e9e9e9;
+    border-bottom: 2px solid #e9e9e9;
+    padding: 0.16rem 0 0.16rem 0.2rem;
+    margin-bottom:4px;
+  }
+li{
+  list-style: none;
+}
+
+  .zschoose{
+    width: 90%;
+    margin:0 auto;
+    // padding-left: .3rem;
+  }
+  .zstext-content {
+    .choose{
+      width: 100%;
+    }
+    // padding-left: 0.1rem;
+    .zs-select {
+      width: 100%;
+      background-color: pink;
+    }
+    .zsul {
+      padding-left: 0.5rem;
+     
+    }
+  }
+}
+.zsli{
+    border-bottom: .2rem solid #e9e9e9;
+}
+.zsh1{
+    margin-bottom: .4rem;
+}
+.zs-last{
+   
+    border-top: 1px solid grey;
+}
+.zstwo{
+    margin-bottom: .2rem;
+}
+nav {
+    /*border: 1px solid red;*/
+    width: 100%;
+    height: 50px;
+    // line-height: 30px;
+    // position: absolute;
+    // top: 198/100rem;
+    
+    // margin-left: -8/100rem;
+    // padding-left: -20/100rem;
+    font-weight: lighter;
+    ul {
+      display: flex;
+      li {
+        flex: 1;
+        text-align: center;
+        // list-style-type: none;
+        // border-bottom: 1px solid white;
+        // width: 160/100rem;
+        height: 80/100rem;
+        line-height: 80/100rem;
+        // float: left;
+        // text-align: center;
+        // margin-left: -10/100rem;
+        font-size: 16px;
+        
+      }
+    }
+  }
+  .active {
+    color: blue;
+    border-bottom: 1px solid blue;
+  }
+  section {
+    /*border: 1px solid black;*/
+    width: 100%;
+    /*height: 1400/100rem;*/
+    // position: absolute;
+    // top: 298/100rem;
+    overflow: auto;
+    margin-bottom: 1rem;
+    .tabe1 {
+        .fixedAssets-content {
+          border-bottom: 2px solid gainsboro;
+          width: 100%;
+          height: 200/100rem;
+          padding-left: 30/100rem;
+          h1 {
+            font-size: 16px;
+            font-weight: normal;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          p {
+            margin-top: 30/100rem;
+            font-size: 13px;
+            font-weight:normal;
+            color: gray;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            
+          }
+          p:nth-child(2) {
+            span:nth-child(2) {
+              margin-left: 10/100rem;
+              color: blue;
+            }
+            span:nth-child(3) {
+              margin-left: 30/100rem;
+            }
+            span:nth-child(4) {
+              margin-left: 10/100rem;
+            }
+          }
+          p:nth-child(3) {
+            span:nth-child(2) {
+              margin-left: 70/100rem;
+              color: blue;
+            }
+          }
+        }
+    }
+  }
+  .scroll-content{
+    overflow: hidden;
+    position: absolute;
+    top: 3.8rem;
+    bottom: 50px;
+    left:0;
+    right:0;
+    border-top: 1px solid #ddd;
+    padding:0 10px;
+  }
+</style>

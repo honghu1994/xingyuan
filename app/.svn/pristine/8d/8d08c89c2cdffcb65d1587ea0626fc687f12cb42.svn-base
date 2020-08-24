@@ -1,0 +1,100 @@
+<template>
+    <div class="work-details">
+    <header-top>
+        <div slot="left">
+            <img @click="$router.go(-1)" src="@/assets/img/back.png">
+        </div>
+        <div slot="mid">工作动态</div>
+    </header-top>
+    <scroll
+        class="scroll-content"
+        ref="scroll"
+    >
+        <div>
+            <h4>{{workStatusDetail.title}}</h4>
+            <p class="infoFrom">信息来源：<span style="margin-right:5px;">{{workStatusDetail.source}}</span>提供日期：
+            <span>{{workStatusDetail.releaseTime | dateFormat}}</span></p>
+            <img class="img" :src="workStatusDetail.headerImage" alt="">
+            <p class="work-details-content" v-html="workStatusDetail.content"></p>
+        </div>
+    </scroll>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+import Scroll from '@/common/Scroll'
+export default {
+    data(){
+        return{
+            workStatusDetail:{},
+            id:this.$route.query.id,
+            user_id:this.$store.state.loginInfo.sessionVal.uSER_ID
+        }
+    },
+    components:{
+        HeaderTop,Scroll
+    },
+    mounted(){
+        this.getWorkStatusDetail()
+    },
+    methods:{
+        getWorkStatusDetail(){
+            this.$http.post('app_Module3/workDynamicsDetail',{work_id:this.id,user_id:this.user_id}).then(res=>{
+                console.log(res)
+                if(res.data.code == 200){
+                    this.workStatusDetail = res.data.data.workDynamicsDetail
+                }
+            })
+        }
+    }
+}
+</script>
+
+<style lang='less' scoped>
+    .work-details{
+        padding: 10px;
+        position: absolute;
+        left: 0;
+        top:0;
+        right:0;
+        bottom:0;
+        z-index: 100;
+        background: #fff;
+        overflow-y: auto;
+        h4{
+            font-size: 16px;
+            text-align: center;
+            padding:10px 0;
+        }
+        .infoFrom{
+            text-align: center;
+            font-size: 15px;
+            color: #666;
+            padding-bottom: 10px;
+        }
+        .img{
+            width:70%;
+            margin-left: 15%;
+            margin-bottom: 10px;
+        }
+        .work-details-content{
+            font-size: 14px;
+            line-height: 0.46rem;
+            text-indent: 2em;
+            img{
+                width: 120px!important;
+            }
+        }
+    }
+    .scroll-content{
+      overflow: hidden;
+      position: absolute;
+      top: 1.18rem;
+      bottom: 50px;
+      left:0;
+      right:0;
+      border-top: 1px solid #ddd;
+      padding:0 10px;
+    }
+</style>

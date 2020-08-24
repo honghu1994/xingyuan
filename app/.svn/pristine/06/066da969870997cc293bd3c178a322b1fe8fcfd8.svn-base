@@ -1,0 +1,171 @@
+<template>
+    <div class="work-status">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">工作动态</div>
+        </header-top>
+        <div class="mainpage">
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多数据了" @load="onLoad">    
+                <div class="work-content" v-for="item in workStatusList" :key="item.id">
+                    <router-link class="item" :to="{path:'/workStatus/WorkStatusDetails',query: {id: item.id}}" tag="div" >
+                        <h4>{{item.title}}</h4>
+                        <!-- <small>{{item.releaseTime}}小时前</small>
+                        <p>{{item.source}}</p> -->
+                        <div class="content1">
+                            <img :src="item.headerImage" alt="">
+                            <div class="source">
+                                <p>{{item.source}}</p>
+                                <span>{{item.dynamic_time}}</span>
+                            </div>
+                        </div>
+                        <span class="circle" v-show="item.readerStatus == 0" >new</span>
+                    </router-link>
+                </div>
+            </van-list>
+
+        </div>
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+// import BScroll from '@better-scroll/core'
+export default {
+    data(){
+        return{
+            workStatusList:[],
+            nowPage:0,
+            pagesCount:1,
+            isShowMessage:false,
+            user_id:this.$store.state.loginInfo.sessionVal.uSER_ID,
+            // vant
+            loading: false,   //是否处于加载状态
+            finished: false,  //是否已加载完所有数据
+        }
+    },
+    components:{
+        HeaderTop
+    },
+    mounted(){
+    
+            this.getWorkStatus()
+    },
+    methods:{
+        onLoad(){
+            this.getWorkStatus()
+        },
+        getWorkStatus(){
+            this.loading = true
+            this.nowPage = this.nowPage + 1
+            console.log(this.nowPage)
+            this.$http.post('app_Module3/workDynamicsList',{nowpage:this.nowPage,user_id:this.user_id}).then(res=>{
+                // console.log(res)
+                if(res.data.code == 200){
+                //   console.log(res.data.data.workDynamicsList)
+                    this.workStatusList.push(...res.data.data.workDynamicsList)
+                    this.pagesCount = res.data.data.page.pageCount
+                    this.loading = false;   //数据请成功后
+                    if(this.nowPage >=this.pagesCount){
+                        this.finished = true;
+                    }
+              
+                }
+            })
+        },
+       
+    }
+
+}
+</script>
+
+<style lang='less' scoped>
+  .work-status{
+      padding: relative;
+    width: 100%;
+    
+        .item{
+            position: relative;
+            padding: 16px 10px;
+            
+            .circle{
+                position: absolute;
+                // background: red;
+                right:10px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: red;
+                border-radius: 3px;
+                height: 12px;
+                line-height: 10px;
+                border: 1px solid red;
+            }
+            &:before{
+                content:'';
+                position: absolute;
+                left:0;
+                border-bottom:1px solid #ccc;
+                width: 100%;
+                height:1px;
+                bottom: 0px;
+
+            }
+            h4{
+                font-size: 15px;
+                font-weight: normal;
+                color: #000;
+                margin-bottom: 3px;
+            }
+
+            .content1{
+                background:#eee;
+                margin-top: 10px;
+                display: flex;
+                // align-items: center;
+                padding: 8px;
+                height:118px;
+                /* border: 1px solid red; */
+                box-sizing: border-box;
+                img{
+                    width: 3rem;
+                    height: 2rem;
+                    border: 1px solid #ddd;
+                }
+                .source{
+                    font-size: 14px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    padding: 10px;
+                    p{
+                        /* font-weight: bold; */
+                        font-size:14px;
+                    }
+                }
+
+            }
+        }
+
+      }
+//   }
+    // .scroll-content{
+    //     overflow: hidden;
+    //     position: fixed;
+    //     top: 1.18rem;
+    //     bottom: 50px;
+    //     left:0;
+    //     right:0;
+    //     border-top: 1px solid #ddd;
+    //     padding:0 10px;
+
+    // }
+    // .mainpage{
+    //     position: absolute;
+    //     width: 100%;
+    //     top: 1.18rem;
+    //     bottom: 50px;
+        
+    //     overflow: hidden;   
+    // }
+</style>

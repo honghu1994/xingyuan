@@ -1,0 +1,72 @@
+<template>
+    <div class="asset-location">
+        <header-top>
+            <div slot="left">
+                <img @click="$router.go(-1)" src="@/assets/img/back.png">
+            </div>
+            <div slot="mid">资产位置</div>
+        </header-top>
+        <div >
+            <h4 style="margin:0 10px;font-size:0.6rem;color:#666;">{{position.name}}</h4>
+            <div id="locationMap"></div>
+        </div>
+
+        
+    </div>
+</template>
+
+<script>
+import HeaderTop from '@/common/Header'
+export default {
+    name:'AssetLocation',
+    data(){
+        return{
+            position:this.$route.params
+        }
+    },
+    components:{
+        HeaderTop
+    },
+    mounted(){
+        this.getMapLocation()
+        // console.log(this.$route)
+    },
+    methods:{
+       getMapLocation(){
+            var map=new BMap.Map("locationMap")
+            var new_point=new BMap.Point(
+                this.position.lon,
+                this.position.lat
+            )
+            map.centerAndZoom(new_point,17)
+            map.enableScrollWheelZoom(true)
+            map.clearOverlays()
+            var marker = new BMap.Marker(new_point); // 创建标注
+            map.addOverlay(marker); // 将标注添加到地图中
+            map.panTo(new_point);
+       } 
+    }
+}
+</script>
+
+<style lang='less' scoped>
+    .asset-location{
+        font-size: 0;
+        box-sizing: border-box;
+        position:absolute; 
+        left: 0;
+        top:10px;
+        right:0;
+        bottom:0;
+        width: 100%;
+        #locationMap {
+            width: 100%;
+            height: 80%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+    }
+    
+    
+</style>
